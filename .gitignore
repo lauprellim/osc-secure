@@ -1,0 +1,12 @@
+# Python
+__poycache__/
+*.pyc
+
+# pico sensitive files
+credentials.py
+
+# OS files
+.DS_Store
+
+# LyX artifacts
+# nothing here yet

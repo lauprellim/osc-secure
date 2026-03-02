@@ -1,0 +1,429 @@
+#LyX 2.4 created this file. For more info see https://www.lyx.org/
+\lyxformat 620
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children no
+\language american
+\language_package default
+\inputencoding utf8
+\fontencoding auto
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_roman_osf false
+\font_sans_osf false
+\font_typewriter_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\float_placement class
+\float_alignment class
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_formatted_ref 0
+\use_minted 0
+\use_lineno 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 1in
+\topmargin 1in
+\rightmargin 1in
+\bottommargin 1in
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tablestyle default
+\tracking_changes false
+\output_changes false
+\change_bars false
+\postpone_fragile_content true
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\docbook_table_output 0
+\docbook_mathml_prefix 1
+\end_header
+
+\begin_body
+
+\begin_layout Title
+A More Secure System for Transmitting
+\begin_inset Newline newline
+\end_inset
+
+OSC Performance Data over UDP
+\end_layout
+
+\begin_layout Author
+Paul V.
+ Miller
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset href
+LatexCommand href
+name "Open Sound Control"
+target "https://ccrma.stanford.edu/groups/osc/index.html"
+literal "false"
+
+\end_inset
+
+ (OSC) is a widely used protocol for sending control data over networks in live performance and interactive art.
+ It is a relatively simple protocol typically sent over UDP that maintains the low latency necessary for audio applications.
+ However,
+ OSC messages are frequently transmitted over shared WiFi networks without any authentication or integrity protection.
+ Because UDP provides no built-in authentication or session management,
+ any device on the same network can inject control messages if it knows (or discovers) the destination IP and port.
+ In a live performance,
+ this can result in a catastrophic attack.
+\end_layout
+
+\begin_layout Standard
+The purpose of this project is to add some basic security layers to OSC.
+ Although OSC is a general protocol that can be implemented by servers,
+ microcontrollers,
+ or other devices,
+ I will be working in the very common Max/MSP environment.
+ OSC externals for Max can be downloaded from the Center for New Music and Audio Technologies (CNMAT) at UC-Berkeley 
+\begin_inset CommandInset href
+LatexCommand href
+name "https://cnmat.berkeley.edu/downloads"
+target "here"
+literal "false"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Section
+Risk Assessment
+\end_layout
+
+\begin_layout Standard
+In a typical performance or installation that utilizes OSC over WiFi systems,
+ an attacker has to be on the same network as the victim.
+ For open networks,
+ gaining this kind of access is trivial.
+ For closed networks,
+ it is not easy to crack a router's WiFi password (particularly if it is encoded using WPA2 or WPA3).
+ However,
+ musicians and artists are frequently unaware of the security vulnerabilities that routers expose.
+ For example,
+ routers are often shared assets that pass fluidly from person to person,
+ with several individuals aware of the password.
+ Router passwords are frequently shared in a cooperative environment.
+ The sticker on the router advertising the credentials may not be removed,
+ boldly advertising the password to any 
+\begin_inset Quotes eld
+\end_inset
+
+curious
+\begin_inset Quotes erd
+\end_inset
+
+ passerby who snaps a photo of the tech setup.
+ Consequently,
+ an attack would most likely come from an insider wanting to disrupt a performance.
+\end_layout
+
+\begin_layout Standard
+If the router password is known,
+ an attacker would still need to know the port number through which OSC data was being transmitted.
+ In TCP and UDP,
+ port numbers are 16 bits long.
+ Certain ports are more frequently used for OSC transmission because of their prevalence in online tutorials:
+ for example,
+ most Max/MSP tutorials use ports 7000,
+ 8000 or 9000.
+ SuperCollider defaults to port 57120.
+ Although port scanning is easy for TCP services discovery,
+ it is more difficult on UDP.
+ Although UDP services may not respond to invalid probes,
+ it remains feasible to scan all 65,536 ports in a short period of time;
+ a single successful OSC injection would tell the attacker that they found the right port.
+\end_layout
+
+\begin_layout Standard
+Distinct from but related to message injection,
+ 
+\shape italic
+flooding
+\shape default
+ is a second problem that frequently occurs even when legitimately sending OSC control codes.
+ Too many messages arriving at the same time can overload the ability to process them all,
+ causing sequencing and timing issues in audio applications.
+ Message flooding could occur if an attacker captured encrypted OSC control codes and replayed them,
+ overwhelming the victim.
+\end_layout
+
+\begin_layout Standard
+There are no native security features for sending OSC messages over UDP apart from the general features of WiFi routers.
+ The protocol operates entirely on a trust model.
+ Most artists using these systems are not trained in security measures.
+ I have personally witnessed radically insecure setups at electronic music performances.
+\end_layout
+
+\begin_layout Standard
+Breach of this trust model can easily result in a catastrophic attack.
+ Injecting OSC messages or flooding the system can grind a performance completely to a halt.
+ If the unfortunate performers were to restart,
+ the security issues would be unresolved and the attack could resume.
+ The impact on a live performance could be enormous,
+ potentially resulting in disruption,
+ significant reputational harm,
+ and audience dissatisfaction.
+\end_layout
+
+\begin_layout Standard
+In summary:
+ a 
+\shape italic
+very realistic threat
+\shape default
+ could come from an attacker who already has another device on the WiFi router,
+ and knows the port.
+ A 
+\shape italic
+moderately realistic threat
+\shape default
+ could come from someone who is on the WiFi router but brute-forces the port number.
+ A 
+\shape italic
+less realistic threat
+\shape default
+ would be an external attacker who cracks WiFi,
+ then scans ports.
+\end_layout
+
+\begin_layout Section
+Goals and Scope
+\end_layout
+
+\begin_layout Standard
+The primary goal of this project is to design and evaluate a lightweight,
+ application-layer security mechanism.
+ The system must be simple enough to ensure low latency,
+ which is critical to audio applications.
+ Specifically,
+ I intend to:
+\end_layout
+
+\begin_layout Enumerate
+Demonstrate the vulnerability of unauthenticated OSC control streams to attacks on a shared network;
+\end_layout
+
+\begin_layout Enumerate
+Design a security envelope that provides:
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Message authenticity and integrity (using HMAC – hash-based message authentication code),
+\end_layout
+
+\begin_layout Enumerate
+Anti-replay protection (using sequence numbers),
+\end_layout
+
+\begin_layout Enumerate
+Basic rate limiting and validation.
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Implement a verification gateway on the receiving host that enforces these protections,
+ while retaining compatibility with existing Max/MSP or Pure Data (Pd) patches;
+\end_layout
+
+\begin_layout Enumerate
+Evaluate the overhead and practical impact of these protections in a real-time performance context.
+\end_layout
+
+\begin_layout Standard
+The scope of the project focuses on application-layer protections,
+ and does not attempt to modify UDP,
+ WiFi or the OSC specification itself.
+\end_layout
+
+\begin_layout Section
+System Overview
+\end_layout
+
+\begin_layout Standard
+The baseline system consists of a 
+\begin_inset Quotes eld
+\end_inset
+
+victim
+\begin_inset Quotes erd
+\end_inset
+
+ Raspberry Pi Pico W,
+ transmitting OSC messages over UDP to a laptop,
+ and an 
+\begin_inset Quotes eld
+\end_inset
+
+attacker
+\begin_inset Quotes erd
+\end_inset
+
+ Pico W capable of sending arbitrary messages to the same IP and port.
+ A laptop receives these packets and uses the control data in a typical way,
+ to affect some aspect of live audio processing.
+\end_layout
+
+\begin_layout Standard
+The proposed secure design includes a verification gateway on the receiving laptop.
+ Instead of listening directly to a WiFi-facing port,
+ we will receive OSC from 
+\family typewriter
+127.0.0.1
+\family default
+.
+ This gateway will only forward verified OSC payloads.
+\end_layout
+
+\begin_layout Standard
+Each UDP datagram will contain:
+\end_layout
+
+\begin_layout Enumerate
+A 12-byte header that contains a version number (1 byte),
+ a reserved field for future extensibility (1 byte),
+ sender device ID (4 bytes),
+ a monotonic sequence number (4 bytes),
+ and a payload length (2 bytes);
+\end_layout
+
+\begin_layout Enumerate
+The OSC payload (unmodified);
+\end_layout
+
+\begin_layout Enumerate
+A 16-byte HMAC authentication tag (e.g.,
+ HMAC-SHA256,
+ truncated to 16 bytes).
+\end_layout
+
+\begin_layout Standard
+The HMAC is a keyed hash function that is computed over the header and OSC payload using a pre-shared symmetric key,
+ provisioned 
+\begin_inset Quotes eld
+\end_inset
+
+out-of-band
+\begin_inset Quotes erd
+\end_inset
+
+ (i.e.,
+ pre-configured on both devices and never transmitted over the network).
+ This general type of system is very common and used extensively in web security (GitHub),
+ cloud infrastructure,
+ and even SSH.
+\end_layout
+
+\begin_layout Standard
+This approach should yield significant benefits,
+ including:
+\end_layout
+
+\begin_layout Enumerate
+Authenticity and integrity:
+ only devices possessing the shared key can generate valid messages;
+\end_layout
+
+\begin_layout Enumerate
+Anti-replay:
+ sequence numbers will prevent re-sending of captured valid packets;
+\end_layout
+
+\begin_layout Enumerate
+Basic availability protections:
+ Rate limiting and message validation prevent flooding and malformed input attacks.
+\end_layout
+
+\begin_layout Section
+Evaluation
+\end_layout
+
+\begin_layout Standard
+I will make short videos of a baseline demonstration simulating an attack;
+ a replay attack;
+ and then a secure system demonstration.
+ To benchmark the system,
+ I will measure end-to-end latency since this is one of the most critical aspects in live audio systems.
+\end_layout
+
+\begin_layout Section
+Expected Outcomes and Further Work
+\end_layout
+
+\begin_layout Standard
+By the end of the project,
+ the system will demonstrate the practical insecurity of unauthenticated OSC over WiFi.
+ I will provide a working prototype of a more secure OSC-style control channel,
+ and show that a lightweight,
+ application layer authentication can effectively prevent injection attacks without significant latency overhead.
+\end_layout
+
+\begin_layout Standard
+Further work beyond the scope of this class project could include integrating this kind of a system into standalone Pd and Max/MSP objects,
+ a key provisioning and rotation mechanism,
+ potential encryption,
+ and support for multiple trusted senders.
+\end_layout
+
+\end_body
+\end_document
