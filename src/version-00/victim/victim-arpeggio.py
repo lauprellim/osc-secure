@@ -29,7 +29,7 @@ BTN_GPIO = 16
 LED_GPIO = 17
 
 NOTE_MS = 100
-VEL     = 90
+VEL     = 80
 
 def wifi_connect():
     wlan = network.WLAN(network.STA_IF)
