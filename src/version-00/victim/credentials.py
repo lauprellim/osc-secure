@@ -5,6 +5,6 @@ Network settings for Pico W demo (keep out of version control).
 '''
 
 WIFI_SSID = "NETGEAR75"
-WIFI_PASS = "modernmoon901"
+WIFI_PASS = "***"
 DEST_IP   = "192.168.1.3"   # comp running Max (osc receiver)
 DEST_PORT = 8000

@@ -2,8 +2,11 @@
 __poycache__/
 *.pyc
 
+# emacs
+*~
+
 # pico sensitive files
-credentials.py
+# credentials.py
 
 # OS files
 .DS_Store
