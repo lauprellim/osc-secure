@@ -1,4 +1,4 @@
-Secure OSC over UDP
+**Secure OSC over UDP**
 
 A lightweight application-layer security envelope for transmitting Open Sound Control (OSC) performance data over UDP.
 
