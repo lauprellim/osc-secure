@@ -30,7 +30,7 @@ BTN_GPIO = 16
 LED_GPIO = 17
 
 NOTE_MS = 100
-VEL     = 90
+VEL     = 110 # make this really loud
 
 def wifi_connect():
     wlan = network.WLAN(network.STA_IF)
@@ -44,7 +44,7 @@ def wifi_connect():
 def victim_range():
     # Victim uses build_major_arpeggio(48) and appends root+36.
     # That yields notes in [48, 84] inclusive.
-    # We'll disrupt within the full chromatic range across those octaves.
+    # Disrupt within the full chromatic range across those octaves.
     return 48, 84
 
 def main():
