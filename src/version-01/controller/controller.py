@@ -13,6 +13,8 @@ Behavior:
 - Sends button press/release changes as OSC integer messages
 - Wraps OSC payload in secure packet format
 - Sends UDP datagrams to the laptop gateway
+- Turns LED on and off when program starts and stops
+
 '''
 
 import time
@@ -95,54 +97,55 @@ def main():
     print('Sending to %s:%d' % dest)
     print('Controller ready.')
 
-    while True:
-        # Read potentiometer
-        current_pot = normalize_adc(pot.read_u16())
+    try:
+        while True:
+            current_pot = normalize_adc(pot.read_u16())
 
-        # Only send if change exceeds threshold
-        if abs(current_pot - last_pot) >= POT_THRESHOLD:
-            seq = send_secure_osc(
-                sock,
-                dest,
-                seq,
-                '/controller/pot1',
-                ',f',
-                (current_pot,)
-            )
-            print('pot1 = %.3f  seq=%d' % (current_pot, seq - 1))
-            last_pot = current_pot
+            if abs(current_pot - last_pot) >= POT_THRESHOLD:
+                seq = send_secure_osc(
+                    sock,
+                    dest,
+                    seq,
+                    '/controller/pot1',
+                    ',f',
+                    (current_pot,)
+                )
+                print('pot1 = %.3f  seq=%d' % (current_pot, seq - 1))
+                last_pot = current_pot
 
-        # Read buttons
-        current_button1 = button1.value()
-        current_button2 = button2.value()
+            current_button1 = button1.value()
+            current_button2 = button2.value()
 
-        # Send only on state change
-        if current_button1 != last_button1:
-            value = 1 if current_button1 == 0 else 0
-            seq = send_secure_osc(
-                sock,
-                dest,
-                seq,
-                '/controller/button1',
-                ',i',
-                (value,)
-            )
-            print('button1 = %d  seq=%d' % (value, seq - 1))
-            last_button1 = current_button1
+            if current_button1 != last_button1:
+                value = 1 if current_button1 == 0 else 0
+                seq = send_secure_osc(
+                    sock,
+                    dest,
+                    seq,
+                    '/controller/button1',
+                    ',i',
+                    (value,)
+                )
+                print('button1 = %d  seq=%d' % (value, seq - 1))
+                last_button1 = current_button1
 
-        if current_button2 != last_button2:
-            value = 1 if current_button2 == 0 else 0
-            seq = send_secure_osc(
-                sock,
-                dest,
-                seq,
-                '/controller/button2',
-                ',i',
-                (value,)
-            )
-            print('button2 = %d  seq=%d' % (value, seq - 1))
-            last_button2 = current_button2
+            if current_button2 != last_button2:
+                value = 1 if current_button2 == 0 else 0
+                seq = send_secure_osc(
+                    sock,
+                    dest,
+                    seq,
+                    '/controller/button2',
+                    ',i',
+                    (value,)
+                )
+                print('button2 = %d  seq=%d' % (value, seq - 1))
+                last_button2 = current_button2
 
-        time.sleep_ms(LOOP_DELAY_MS)
+            time.sleep_ms(LOOP_DELAY_MS)
+
+    finally:
+        print('Shutting down, turning LED off.')
+        led.value(0)
 
 main()
