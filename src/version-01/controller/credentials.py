@@ -8,7 +8,7 @@ Keep this file out of public repositories if it contains real credentials.
 
 WIFI_SSID = 'soundlab-2.4g'
 # replace this with real password
-WIFI_PASSWORD = '****'
+WIFI_PASSWORD = 'modernmoon901'
 
 DEST_IP = '192.168.1.4'
 DEST_PORT = 9000
