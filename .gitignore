@@ -11,5 +11,10 @@ __poycache__/
 # OS files
 .DS_Store
 
-# LyX artifacts
-# nothing here yet
+# LyX temporary files
+*.lyx~
+#*#
+
+# jabref
+*.bib.bak
+*.bib.sav
