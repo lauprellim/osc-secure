@@ -9,6 +9,7 @@ PORT = 9000
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.bind((HOST, PORT))
 
+print("This is listen-udp.py - diagnostic.")
 print('Listening on UDP port %d...' % PORT)
 
 while True:
