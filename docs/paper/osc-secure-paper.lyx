@@ -93,7 +93,8 @@
 \begin_body
 
 \begin_layout Title
-A more secure OSC
+Securing Open Sound Control (OSC) over UDP:
+ A Lightweight HMAC-Based Authentication Scheme for Embedded Systems
 \end_layout
 
 \begin_layout Author
