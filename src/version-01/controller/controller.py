@@ -1,7 +1,10 @@
 '''
 controller.py
+this will also serve as
+main.py
+on the pico w.
 -------------
-Pico W secure OSC controller.
+Pico W secure OSC controller
 
 Hardware:
 - 1 LED
@@ -55,7 +58,7 @@ def wifi_connect():
         while not wlan.isconnected():
             time.sleep(0.2)
 
-    print('WiFi connected.')
+    print('WiFi is connected.')
     print('Pico IP: %s' % wlan.ifconfig()[0])
     return wlan
 
@@ -95,7 +98,7 @@ def main():
     last_pot = normalize_adc(pot.read_u16())
 
     print('Sending to %s:%d' % dest)
-    print('Controller ready.')
+    print('Controller is ready!')
 
     try:
         while True:

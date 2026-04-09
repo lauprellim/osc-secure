@@ -51,7 +51,7 @@ def main():
 
     forward_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-    print('Gateway listening on %s:%d' % (LISTEN_HOST, LISTEN_PORT))
+    print('Gateway is listening on %s:%d' % (LISTEN_HOST, LISTEN_PORT))
     print('Forwarding verified OSC to %s:%d' % (FORWARD_HOST, FORWARD_PORT))
     print('')
 
@@ -110,7 +110,7 @@ def main():
 
         accepted += 1
         print('ACCEPT device=%d seq=%d payload_len=%d total=%d'
-              '  stats: ok=%d hmac=%d replay=%d len=%d ver=%d' %
+              '  stats: ok=%d hmac=%d replay=%d len=%d bad_version_count=%d' %
               (device_id, seq, payload_len, len(data),
                accepted, bad_hmac, replay, bad_length, bad_version))
 
