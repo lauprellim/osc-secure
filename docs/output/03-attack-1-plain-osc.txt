@@ -1,0 +1,23 @@
+Gateway is listening on 0.0.0.0:9000
+Forwarding verified OSC to 127.0.0.1:8000
+
+DROP bad_length: from 192.168.1.7:63561 len=28 expected=29259
+DROP bad_length: from 192.168.1.7:63561 len=28 expected=29259
+DROP bad_length: from 192.168.1.7:63561 len=28 expected=29259
+DROP bad_length: from 192.168.1.7:63561 len=28 expected=29259
+DROP bad_length: from 192.168.1.7:63561 len=28 expected=29259
+DROP bad_length: from 192.168.1.7:63561 len=28 expected=29259
+DROP bad_length: from 192.168.1.7:63561 len=28 expected=29259
+DROP bad_length: from 192.168.1.7:63561 len=28 expected=29259
+DROP bad_length: from 192.168.1.7:63561 len=28 expected=29259
+DROP bad_length: from 192.168.1.7:63561 len=28 expected=29259
+DROP bad_length: from 192.168.1.7:63561 len=28 expected=29259
+DROP bad_length: from 192.168.1.7:63561 len=28 expected=29259
+DROP bad_length: from 192.168.1.7:63561 len=28 expected=29259
+DROP bad_length: from 192.168.1.7:63561 len=28 expected=29259
+DROP bad_length: from 192.168.1.7:63561 len=28 expected=29259
+DROP bad_length: from 192.168.1.7:63561 len=28 expected=29259
+DROP bad_length: from 192.168.1.7:63561 len=28 expected=29259
+DROP bad_length: from 192.168.1.7:63561 len=28 expected=29259
+DROP bad_length: from 192.168.1.7:63561 len=28 expected=29259
+DROP bad_length: from 192.168.1.7:63561 len=28 expected=29259
