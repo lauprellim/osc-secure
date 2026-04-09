@@ -1,6 +1,8 @@
 '''
 victim-arpeggio.py
 ------------------
+Rename this main.py on the board.
+
 Victim Pico W demo:
 
 - Button toggles sending on/off (debounced)
@@ -10,7 +12,7 @@ Victim Pico W demo:
 
 Wiring:
 - Button between GPIO15 and GND (internal pull-up)
-- LED anode -> GPIO16 through ~330 ohm, cathode -> GND
+- LED anode -> GPIO16 through resistor, cathode -> GND
 
 Files needed:
 - osc_min.py
@@ -29,7 +31,7 @@ BTN_GPIO = 16
 LED_GPIO = 17
 
 NOTE_MS = 100
-VEL     = 80
+VEL     = 90
 
 def wifi_connect():
     wlan = network.WLAN(network.STA_IF)
