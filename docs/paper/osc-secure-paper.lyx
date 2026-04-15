@@ -199,29 +199,127 @@ Packet Structure
 The packet consisted of a header (12 bytes) which had a version number,
  device ID,
  sequence number and payload length.
- The header was structured in the following manner:
+ The header was structured in the following manner
 \end_layout
 
-\begin_layout Itemize
-1 byte = version number
+\begin_layout Enumerate
+Header (>BBIIH format string for struct.pack() and struct.unpack() in Python:
 \end_layout
 
-\begin_layout Itemize
-1 byte = flags
+\begin_deeper
+\begin_layout Enumerate
+> = big-endian byte order (for network transmission)
 \end_layout
 
-\begin_layout Itemize
-4 bytes = device id
+\begin_layout Enumerate
+B = 1 byte = version number
 \end_layout
 
-\begin_layout Itemize
-4 bytes = sequence number
+\begin_layout Enumerate
+B = 1 byte = flags
 \end_layout
 
-\begin_layout Itemize
-2 bytes = payload length
+\begin_layout Enumerate
+I = 4 bytes = device id
 \end_layout
 
+\begin_layout Enumerate
+I = 4 bytes = sequence number
+\end_layout
+
+\begin_layout Enumerate
+H = 2 bytes = payload length
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+OSC Payload = 28 bytes
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+One of the strings we are transmitting is
+\family typewriter
+ /controller/pot1
+\family default
+.
+ This is 16 characters.
+ But OSC has to be null-terminated,
+ so this becomes 17 bytes.
+ I padded this to 20 bytes.
+\end_layout
+
+\begin_layout Enumerate
+OSC's type tag string,
+ e.g.
+ 
+\begin_inset Quotes eld
+\end_inset
+
+,f
+\begin_inset Quotes erd
+\end_inset
+
+.
+ This is 2 characters plus a null terminator,
+ so 3 bytes.
+ Padded to 4 bytes.
+\end_layout
+
+\begin_layout Enumerate
+The float argument in OSC is a 32-bit float,
+ which adds 4 bytes.
+\end_layout
+
+\begin_layout Enumerate
+Altogether this sums to 28 bytes for the entire OSC payload.
+\end_layout
+
+\begin_layout Enumerate
+Now let's examine what happens if we transmit 
+\family typewriter
+/controller/button1
+\family default
+.
+ This sums to 19 characters,
+ plus a null terminator = 20.
+ This is already a multiple of 4,
+ so it doesn't need padding.
+\end_layout
+
+\begin_layout Enumerate
+The type tag string for this is 
+\begin_inset Quotes eld
+\end_inset
+
+,i
+\begin_inset Quotes erd
+\end_inset
+
+,
+ which is 2 characters plus the obligatory null terminator,
+ which (when padded) again yields 4 butes.
+\end_layout
+
+\begin_layout Enumerate
+OSC integers are 32 bits,
+ so this is 4 bytes.
+\end_layout
+
+\begin_layout Enumerate
+The total payload size in this case is also 28 bytes.
+\end_layout
+
+\begin_layout Enumerate
+If I were to have a control string such as 
+\family typewriter
+/controller/button10
+\family default
+,
+ I would have to rethink the payload length.
+\end_layout
+
+\end_deeper
 \begin_layout Standard
 Then comes the OSC payload itself.
  This was set to 28 bytes.
