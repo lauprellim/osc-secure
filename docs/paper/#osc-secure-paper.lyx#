@@ -199,41 +199,8 @@ Packet Structure
 The packet consisted of a header (12 bytes) which had a version number,
  device ID,
  sequence number and payload length.
- The header was structured in the following manner:
-\end_layout
-
-\begin_layout Itemize
-1 byte = version number
-\end_layout
-
-\begin_layout Itemize
-1 byte = flags
-\end_layout
-
-\begin_layout Itemize
-4 bytes = device id
-\end_layout
-
-\begin_layout Itemize
-4 bytes = sequence number
-\end_layout
-
-\begin_layout Itemize
-2 bytes = payload length
-\end_layout
-
-\begin_layout Standard
-Then comes the OSC payload itself.
- This was set to 28 bytes.
-\end_layout
-
-\begin_layout Standard
-Finally there is an authentication tag (truncated HMAC),
- which is 16 bytes.
-\end_layout
-
-\begin_layout Standard
-The total sizeof the packet is then 56 bytes.
+ Then comes the OSC payload itself.
+ Finally there is an authentication tag (truncated HMAC).
 \end_layout
 
 \begin_layout Subsubsection
@@ -281,7 +248,7 @@ Baseline (unsecured OSC)
 
 \begin_layout Standard
 The first log file shows the normal secure operation of the system.
- The size of each packet is correctly indicating 56 bytes.
+ The size of each packet is correctly indicating 56 bytes
 \end_layout
 
 \begin_layout Standard
@@ -313,7 +280,7 @@ VerbatimInput{02-log-gateway.txt}
 \end_layout
 
 \begin_layout Standard
-It is also possible to inspect the raw packets sequentially:
+Listening and printing out raw packets:
 \end_layout
 
 \begin_layout Standard
@@ -350,8 +317,8 @@ Attack 1:
 \end_layout
 
 \begin_layout Standard
-In the first attack,
- I sent packets with an incorrect HMAC tag
+Show accepted packets.Show tampered packets rejected.
+ Incorrect HMAC – dropped
 \end_layout
 
 \begin_layout Standard
