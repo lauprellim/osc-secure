@@ -5,6 +5,18 @@
 \save_transient_properties true
 \origin unavailable
 \textclass article
+\begin_preamble
+%--- URL hyperlink break
+%\PassOptionsToPackage{hyphens}{url}
+%\usepackage{xurl}
+%\hypersetup{breaklinks=true}
+%\Urlmuskip=0mu plus 1mu
+
+% verbatim codeblock breaking
+\usepackage{fancyvrb}
+\usepackage{fvextra}
+\fvset{breaklines=true,breakanywhere=true}
+\end_preamble
 \use_default_options true
 \maintain_unincluded_children no
 \language american
@@ -235,12 +247,72 @@ Baseline (unsecured OSC)
 \end_layout
 
 \begin_layout Standard
-Demonstrate that arbitrary packets can trigger actions.
- Spoofing is trivial in OSC.
+These packets show...
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{
+\backslash
+footnotesize
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+VerbatimInput{../output/02-log-gateway.txt}
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Listening and printing out raw packets:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{
+\backslash
+footnotesize
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+VerbatimInput{../output/02-log-listen-udp.txt}}
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
 Secured System Behavior
+\end_layout
+
+\begin_layout Subsubsection
+Attack 1:
+ Sending plain OSC without the proper header,
+ etc.
 \end_layout
 
 \begin_layout Standard
@@ -248,13 +320,83 @@ Show accepted packets.Show tampered packets rejected.
  Incorrect HMAC – dropped
 \end_layout
 
-\begin_layout Subsection
-Replay Attack Testing
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{
+\backslash
+footnotesize
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+VerbatimInput{../output/03-attack-1-plain-osc.txt}}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Attack 2:
+ Wrong key
 \end_layout
 
 \begin_layout Standard
-Resend old packets.
- Demonstrate rejection via sequence number with some kind of output from the shell
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{
+\backslash
+footnotesize
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+VerbatimInput{../output/03-attack-2-wrong-key.txt}}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Attack 3:
+ Replayed packets
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{
+\backslash
+footnotesize
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+VerbatimInput{../output/03-drop-replayed-packets.txt}}
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
