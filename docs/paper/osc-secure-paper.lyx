@@ -320,18 +320,21 @@ If I were to have a control string such as
 \end_layout
 
 \end_deeper
-\begin_layout Standard
-Then comes the OSC payload itself.
- This was set to 28 bytes.
+\begin_layout Enumerate
+Finally we have the HMAC-SHA256 tag.
+ A full SHA-256 hash is 32 bytes,
+ but I truncated it to 16 (which still gives 
+\begin_inset Formula $2^{128}$
+\end_inset
+
+ possible tags,
+ which is secure enough for my needs.
+ The keyed hash is computed over the header AND the payload.
 \end_layout
 
 \begin_layout Standard
-Finally there is an authentication tag (truncated HMAC),
- which is 16 bytes.
-\end_layout
-
-\begin_layout Standard
-The total sizeof the packet is then 56 bytes.
+Since 12 + 28 + 16 = 56,
+ the total size of each packet is 56 bytes.
 \end_layout
 
 \begin_layout Subsubsection
@@ -341,7 +344,7 @@ Authentication Mechanism
 \begin_layout Standard
 This is HMAC-SHA256 over (header || OSC payload).
  This is truncated to 16 bytes.
- The key is NOT transmitted and is shared out of bands (?)
+ The key is NOT transmitted and is shared out of band.
 \end_layout
 
 \begin_layout Subsubsection
