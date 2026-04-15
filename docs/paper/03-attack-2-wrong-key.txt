@@ -1,0 +1,23 @@
+Gateway is listening on 0.0.0.0:9000
+Forwarding verified OSC to 127.0.0.1:8000
+
+DROP bad_hmac: device=2 seq=45 from 192.168.1.7:63563
+DROP bad_hmac: device=2 seq=46 from 192.168.1.7:63563
+DROP bad_hmac: device=2 seq=47 from 192.168.1.7:63563
+DROP bad_hmac: device=2 seq=48 from 192.168.1.7:63563
+DROP bad_hmac: device=2 seq=49 from 192.168.1.7:63563
+DROP bad_hmac: device=2 seq=50 from 192.168.1.7:63563
+DROP bad_hmac: device=2 seq=51 from 192.168.1.7:63563
+DROP bad_hmac: device=2 seq=52 from 192.168.1.7:63563
+DROP bad_hmac: device=2 seq=53 from 192.168.1.7:63563
+DROP bad_hmac: device=2 seq=54 from 192.168.1.7:63563
+DROP bad_hmac: device=2 seq=55 from 192.168.1.7:63563
+DROP bad_hmac: device=2 seq=56 from 192.168.1.7:63563
+DROP bad_hmac: device=2 seq=57 from 192.168.1.7:63563
+DROP bad_hmac: device=2 seq=58 from 192.168.1.7:63563
+DROP bad_hmac: device=2 seq=59 from 192.168.1.7:63563
+DROP bad_hmac: device=2 seq=60 from 192.168.1.7:63563
+DROP bad_hmac: device=2 seq=61 from 192.168.1.7:63563
+DROP bad_hmac: device=2 seq=62 from 192.168.1.7:63563
+DROP bad_hmac: device=2 seq=63 from 192.168.1.7:63563
+DROP bad_hmac: device=2 seq=64 from 192.168.1.7:63563

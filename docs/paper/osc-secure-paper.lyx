@@ -265,7 +265,7 @@ footnotesize
 
 
 \backslash
-VerbatimInput{../output/02-log-gateway.txt}
+VerbatimInput{02-log-gateway.txt}
 \end_layout
 
 \begin_layout Plain Layout
@@ -297,7 +297,7 @@ footnotesize
 
 
 \backslash
-VerbatimInput{../output/02-log-listen-udp.txt}}
+VerbatimInput{02-log-listen-udp.txt}}
 \end_layout
 
 \end_inset
@@ -335,7 +335,7 @@ footnotesize
 
 
 \backslash
-VerbatimInput{../output/03-attack-1-plain-osc.txt}}
+VerbatimInput{03-attack-1-plain-osc.txt}}
 \end_layout
 
 \end_inset
@@ -363,7 +363,7 @@ footnotesize
 
 
 \backslash
-VerbatimInput{../output/03-attack-2-wrong-key.txt}}
+VerbatimInput{03-attack-2-wrong-key.txt}}
 \end_layout
 
 \end_inset
@@ -391,7 +391,7 @@ footnotesize
 
 
 \backslash
-VerbatimInput{../output/03-drop-replayed-packets.txt}}
+VerbatimInput{03-attack-3-drop-replayed-packets.txt}}
 \end_layout
 
 \end_inset

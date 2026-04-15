@@ -1,0 +1,32 @@
+Gateway is listening on 0.0.0.0:9000
+Forwarding verified OSC to 127.0.0.1:8000
+
+ACCEPT device=1 seq=116 payload_len=28 total=56  stats: ok=1 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=117 payload_len=28 total=56  stats: ok=2 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=118 payload_len=28 total=56  stats: ok=3 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=119 payload_len=28 total=56  stats: ok=4 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=120 payload_len=28 total=56  stats: ok=5 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=121 payload_len=28 total=56  stats: ok=6 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=122 payload_len=28 total=56  stats: ok=7 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=123 payload_len=28 total=56  stats: ok=8 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=124 payload_len=28 total=56  stats: ok=9 hmac=0 replay=0 len=0 bad_version_count=0
+DROP replay: device=1 seq=26 last_seq=124
+DROP replay: device=1 seq=26 last_seq=124
+DROP replay: device=1 seq=26 last_seq=124
+DROP replay: device=1 seq=26 last_seq=124
+DROP replay: device=1 seq=26 last_seq=124
+DROP replay: device=1 seq=26 last_seq=124
+ACCEPT device=1 seq=125 payload_len=28 total=56  stats: ok=10 hmac=0 replay=6 len=0 bad_version_count=0
+ACCEPT device=1 seq=126 payload_len=28 total=56  stats: ok=11 hmac=0 replay=6 len=0 bad_version_count=0
+ACCEPT device=1 seq=127 payload_len=28 total=56  stats: ok=12 hmac=0 replay=6 len=0 bad_version_count=0
+ACCEPT device=1 seq=128 payload_len=28 total=56  stats: ok=13 hmac=0 replay=6 len=0 bad_version_count=0
+ACCEPT device=1 seq=129 payload_len=28 total=56  stats: ok=14 hmac=0 replay=6 len=0 bad_version_count=0
+ACCEPT device=1 seq=130 payload_len=28 total=56  stats: ok=15 hmac=0 replay=6 len=0 bad_version_count=0
+ACCEPT device=1 seq=131 payload_len=28 total=56  stats: ok=16 hmac=0 replay=6 len=0 bad_version_count=0
+ACCEPT device=1 seq=132 payload_len=28 total=56  stats: ok=17 hmac=0 replay=6 len=0 bad_version_count=0
+ACCEPT device=1 seq=133 payload_len=28 total=56  stats: ok=18 hmac=0 replay=6 len=0 bad_version_count=0
+ACCEPT device=1 seq=134 payload_len=28 total=56  stats: ok=19 hmac=0 replay=6 len=0 bad_version_count=0
+ACCEPT device=1 seq=135 payload_len=28 total=56  stats: ok=20 hmac=0 replay=6 len=0 bad_version_count=0
+ACCEPT device=1 seq=136 payload_len=28 total=56  stats: ok=21 hmac=0 replay=6 len=0 bad_version_count=0
+ACCEPT device=1 seq=137 payload_len=28 total=56  stats: ok=22 hmac=0 replay=6 len=0 bad_version_count=0
+ACCEPT device=1 seq=138 payload_len=28 total=56  stats: ok=23 hmac=0 replay=6 len=0 bad_version_count=0

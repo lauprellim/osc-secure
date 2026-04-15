@@ -1,0 +1,20 @@
+Gateway is listening on 0.0.0.0:9000
+Forwarding verified OSC to 127.0.0.1:8000
+
+ACCEPT device=1 seq=200 payload_len=28 total=56  stats: ok=1 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=201 payload_len=28 total=56  stats: ok=2 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=202 payload_len=28 total=56  stats: ok=3 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=203 payload_len=28 total=56  stats: ok=4 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=204 payload_len=28 total=56  stats: ok=5 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=205 payload_len=28 total=56  stats: ok=6 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=206 payload_len=28 total=56  stats: ok=7 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=207 payload_len=28 total=56  stats: ok=8 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=208 payload_len=28 total=56  stats: ok=9 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=209 payload_len=28 total=56  stats: ok=10 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=210 payload_len=28 total=56  stats: ok=11 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=211 payload_len=28 total=56  stats: ok=12 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=212 payload_len=28 total=56  stats: ok=13 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=213 payload_len=28 total=56  stats: ok=14 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=214 payload_len=28 total=56  stats: ok=15 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=215 payload_len=28 total=56  stats: ok=16 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=216 payload_len=28 total=56  stats: ok=17 hmac=0 replay=0 len=0 bad_version_count=0
