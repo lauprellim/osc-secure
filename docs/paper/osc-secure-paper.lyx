@@ -119,7 +119,8 @@ Introduction
 \end_layout
 
 \begin_layout Standard
-This project presents a lightweight authentication layer for OSC over UDP using HMAC and sequence-based replay protection.
+This project presents a lightweight authentication layer for transmitting OSC (Open Sound Control) packets over UDP,
+ using HMAC and sequence-based replay protection.
  The approach is designed for resource-constrained embedded controllers that operate in live performance or real-time musical applications.
 \end_layout
 
@@ -133,10 +134,57 @@ OSC
 
 \begin_layout Standard
 OSC (Open Sound Control) is widely used in computer music and in interactive computer systems,
- for sending data efficiently.
+ for sending live performance data efficiently.
  Very frequently the data is some musical information (such as pitch,
  control data or velocity) that is produced by some sort of human interface.
- Many such software controllers are available such as TouchOSC or Protokol...
+ Many software controllers are available online such as TouchOSC or Protokol.
+ These kinds of controllers typically allow the user to design an interface that can include buttons,
+ sliders,
+ knobs,
+ or other kinds of control surfaces that send control data to another application.
+ A typical setup is shown below.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement document
+alignment document
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename touchosc-photo.jpg
+	lyxscale 10
+	scale 60
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+TouchOSC setup (from TouchOSC's web site)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -146,10 +194,355 @@ It is also possible to build one's own physical controllers out of hardware comp
  or even sensors ranging from the very inexpensive and ubiquitous ultrasonic distance sensor (HCSR04) to more complex sensors such as accellerometers,
  gyroscopes or magnetometers (e.g.
  LSM9DS1 or BNO055).
+ A small inexpensive microcontroller such as a Raspberry Pi Pico W can then format the data into an OSC message.
+ An OSC message can combine several kinds of data into one line,
+ making it flexible.
+\end_layout
+
+\begin_layout Standard
+The OSC protocol stipulates that data types have to be labeled.
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+\begin_inset CommandInset citation
+LatexCommand cite
+key "wright2002osc"
+literal "false"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ So a message that mixes data types such as integer and float,
+ such as:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{verbatim}
+\end_layout
+
+\begin_layout Plain Layout
+
+/controller/move/ 60 0.75 
+\begin_inset Quotes eld
+\end_inset
+
+legato
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{verbatim}
+\end_layout
+
+\end_inset
+
+Must have a type tag:
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{verbatim}
+\end_layout
+
+\begin_layout Plain Layout
+
+,ifs
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{verbatim}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+that stipulates 
+\begin_inset Quotes eld
+\end_inset
+
+the first datum is an integer,
+ the second is a float and the third is a string
+\begin_inset Quotes erd
+\end_inset
+
+.
+ The type tag always begins with a comma.
+ So in the case above,
+ we must do the following:
+\end_layout
+
+\begin_layout Enumerate
+first send the address string 
+\begin_inset Quotes eld
+\end_inset
+
+
+\family typewriter
+/controller/move
+\family default
+
+\begin_inset Quotes erd
+\end_inset
+
+,
+ which is null-terminated and padded to a multiple of 4 bytes.
+\end_layout
+
+\begin_layout Enumerate
+Next we send the type tag string 
+\family typewriter
+
+\begin_inset Quotes eld
+\end_inset
+
+,ifs
+\family default
+
+\begin_inset Quotes erd
+\end_inset
+
+,
+ which must always begin with a comma.
+ It is also null-terminated and padded to a multiple of 4 bytes.
+\end_layout
+
+\begin_layout Enumerate
+Finally we can send the arguments.
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Integers are 32-bit signed,
+ and need to be big-endian (network byte order);
+\end_layout
+
+\begin_layout Enumerate
+Floats are 32-bit IEEE 754 standard floating-point,
+ and also big-endian;
+\end_layout
+
+\begin_layout Enumerate
+Strings are standard ASCII and must be null-terminated,
+ and padded to 4 bytes,
+ so 
+\begin_inset Quotes eld
+\end_inset
+
+hello
+\begin_inset Quotes erd
+\end_inset
+
+ in OSC is 8 bytes.
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+These standards decrease the potential ambiguity in sending OSC messages.
+ The whole idea behind OSC was to improve upon the MIDI standard which,
+ though useful in many cases,
+ is limited to 7-bit values 0-127.
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+The most significant bit in MIDI is used to distinguish between status bytes and data bytes,
+ allowing the system to distinguish between 
+\begin_inset Quotes eld
+\end_inset
+
+starting a new message
+\begin_inset Quotes erd
+\end_inset
+
+ (status byte) or 
+\begin_inset Quotes eld
+\end_inset
+
+this byte is a continuation of the current message
+\begin_inset Quotes erd
+\end_inset
+
+ (data).
+ The designers of MIDI understood that there would probably only be 127 discrete values for pitch and volume,
+ so they left it at that;
+ the MIDI standard becomes more problematic when users require sending other kinds of performance data.
+\end_layout
+
+\end_inset
+
+OSC also works well with patching environments such as Max/MSP and Pd,
+ because message structures can be very easily separated using the 
+\family typewriter
+[route]
+\family default
+ object.
 \end_layout
 
 \begin_layout Subsection
-Thread Model
+Threat Model:
+ Background
+\end_layout
+
+\begin_layout Standard
+Sending OSC messages usually happens over UDP,
+ because transmission needs to be quick and low-latency.
+ UDP does not engage in the 
+\begin_inset Quotes eld
+\end_inset
+
+three way handshake
+\begin_inset Quotes erd
+\end_inset
+
+ (SYN – SYN-ACK – ACK) nor does it retransmit lost packets.
+ The logic behind this is that in live performance,
+ it is better just to drop a lost packet than to wait for it.
+\end_layout
+
+\begin_layout Standard
+However,
+ because UDP removes the mechanisms for authentication and state,
+ it makes some attacks easier.
+ While it is possible to 
+\begin_inset Quotes eld
+\end_inset
+
+spoof
+\begin_inset Quotes erd
+\end_inset
+
+ TCP packets and even to inject data under some circumstances,
+ UDP doesn't have any connection state,
+ sequence tracking or verification.
+ So the receiver doesn't really know where a packet came from.
+ This makes spoofing and injection much easier.
+\end_layout
+
+\begin_layout Subsection
+Threat Assessment
+\end_layout
+
+\begin_layout Standard
+In a typical performance or installation that utilizes OSC over WiFi systems,
+ an attacker has to be on the same network as the victim.
+ For open networks,
+ gaining this kind of access is trivial.
+ For closed networks,
+ it is not easy to crack a router's WiFi password (particularly if it is encoded using WPA2 or WPA3).
+ However,
+ musicians and artists are frequently unaware of the security vulnerabilities that routers expose.
+ For example,
+ routers are often shared assets that pass fluidly from person to person,
+ with several individuals aware of the password.
+ Router passwords are frequently shared in a cooperative environment.
+ The sticker on the router advertising the credentials may not be removed,
+ boldly advertising the password to any 
+\begin_inset Quotes eld
+\end_inset
+
+curious
+\begin_inset Quotes erd
+\end_inset
+
+ passerby who snaps a photo of the tech setup.
+ Consequently,
+ an attack would most likely come from an insider wanting to disrupt a performance.
+\end_layout
+
+\begin_layout Standard
+If the router password is known,
+ an attacker would still need to know the port number through which OSC data was being transmitted.
+ In TCP and UDP,
+ port numbers are 16 bits long.
+ Certain ports are more frequently used for OSC transmission because of their prevalence in online tutorials:
+ for example,
+ most Max/MSP tutorials use ports 7000,
+ 8000 or 9000.
+ SuperCollider defaults to port 57120.
+ Although port scanning is easy for TCP services discovery,
+ it is more difficult on UDP.
+ Although UDP services may not respond to invalid probes,
+ it remains feasible to scan all 65,536 ports in a short period of time;
+ a single successful OSC injection would tell the attacker that they found the right port.
+\end_layout
+
+\begin_layout Standard
+Distinct from but related to message injection,
+ 
+\shape italic
+flooding
+\shape default
+ is a second problem that frequently occurs even when legitimately sending OSC control codes.
+ Too many messages arriving at the same time can overload the ability to process them all,
+ causing sequencing and timing issues in audio applications.
+ Message flooding could occur if an attacker captured encrypted OSC control codes and replayed them,
+ overwhelming the victim.
+\end_layout
+
+\begin_layout Standard
+There are no native security features for sending OSC messages over UDP apart from the general features of WiFi routers.
+ The protocol operates entirely on a trust model.
+ Most artists using these systems are not trained in security measures.
+ I have personally witnessed radically insecure setups at electronic music performances.
+\end_layout
+
+\begin_layout Standard
+Breach of this trust model can easily result in a catastrophic attack.
+ Injecting OSC messages or flooding the system can grind a performance completely to a halt.
+ If the unfortunate performers were to restart,
+ the security issues would be unresolved and the attack could resume.
+ The impact on a live performance could be enormous,
+ potentially resulting in disruption,
+ significant reputational harm,
+ and audience dissatisfaction.
+\end_layout
+
+\begin_layout Standard
+In summary:
+ a 
+\shape italic
+very realistic threat
+\shape default
+ could come from an attacker who already has another device on the WiFi router,
+ and knows the port.
+ A 
+\shape italic
+moderately realistic threat
+\shape default
+ could come from someone who is on the WiFi router but brute-forces the port number.
+ A 
+\shape italic
+less realistic threat
+\shape default
+ would be an external attacker who cracks WiFi,
+ then scans ports.
 \end_layout
 
 \begin_layout Section
@@ -377,6 +770,19 @@ Results
 \end_layout
 
 \begin_layout Subsection
+Basic Attack Demonstration
+\end_layout
+
+\begin_layout Standard
+As proof-of-concept,
+ I simulated a trivial attack using two Raspberry Pi Pico Ws.
+ The victim simply sent OSC messages containing MIDI notes that produced a two-octave C Major arpeggio on the receiving end through a simple Max/MSP patch.
+ The attacker sent random MIDI values on the same port as the victim,
+ dramatically disrupting the arpeggio.
+ The results can be viewed [video].
+\end_layout
+
+\begin_layout Subsection
 Baseline (unsecured OSC)
 \end_layout
 
@@ -550,6 +956,19 @@ Discussion
 
 \begin_layout Section
 Conclusion
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+btprint "btPrintCited"
+bibfiles "osc-secure-bibliography"
+options "plain"
+encoding "default"
+
+\end_inset
+
+
 \end_layout
 
 \end_body
