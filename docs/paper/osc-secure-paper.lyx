@@ -691,7 +691,7 @@ The type tag string for this is
 
 ,
  which is 2 characters plus the obligatory null terminator,
- which (when padded) again yields 4 butes.
+ which (when padded) again yields 4 bytes.
 \end_layout
 
 \begin_layout Enumerate
@@ -721,7 +721,9 @@ Finally we have the HMAC-SHA256 tag.
 \end_inset
 
  possible tags,
- which is secure enough for my needs.
+ which is secure enough).
+ I decided to truncate the hash to save some overhead and improve latency,
+ which is very important.
  The keyed hash is computed over the header AND the payload.
 \end_layout
 
@@ -763,6 +765,11 @@ Python authentication and decoding program on Macintosh:
 
 \begin_layout Standard
 Usage in Max/MSP:
+\end_layout
+
+\begin_layout Standard
+The system sends packets to port 9000,
+ and the gateway forward them to port 8000 via the loopback.
 \end_layout
 
 \begin_layout Section

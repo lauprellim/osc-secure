@@ -1,11 +1,13 @@
 '''
 attack3.py
 ------------------
-Replay previously captured legitimate packets.
+Replay previously captured legitimate packets. In this really simple demonstration,
+I just copied packets that I received and will replay them. I'm not actaully sniffing
+packets on WiFi.
 
 Expected:
-- gateway rejects with DROP replay
-- Max receives nothing
+- gateway will rejects with DROP replay
+- Max receives nothing at all.
 '''
 
 import time

@@ -1,16 +1,16 @@
 '''
 attack1.py
 -----------
-Unauthorized sender that transmits plain OSC directly to the
+Unauthorized sender transmits plain OSC directly to the
 gateway's secure UDP port, without secure header or HMAC.
 
 Expected result:
-- gateway rejects packets
-- Max/MSP receives nothing
+- gateway should reject packets that aren't formed correctly
+- Max/MSP receives NUTHIN
 
 The gateway will reject the packets because there will be a nonsense
 payload_len, which is the result of interpreting plain OSC bytes
-(with no header!) as if they were a secure header.
+(with no header, or HMAC) *as if* they were a secure message.
 
 '''
 

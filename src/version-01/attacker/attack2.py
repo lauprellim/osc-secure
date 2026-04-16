@@ -1,12 +1,12 @@
 '''
 attack2.py
 ---------------------
-Attacker Pico W that sends well-formed secure packets,
+Attacker Pico W sends well-formed secure packets,
 but with the wrong HMAC key!
 
 Expected result:
 - gateway rejects packets with bad_hmac
-- Max/MSP receives nothing
+- Max/MSP receives NOTHING
 '''
 
 import time
@@ -40,7 +40,7 @@ def wifi_connect():
         while not wlan.isconnected():
             time.sleep(0.2)
 
-    print('WiFi connected.')
+    print('WiFi is connected.')
     print('Attacker IP: %s' % wlan.ifconfig()[0])
     return wlan
 
@@ -66,8 +66,8 @@ def main():
     seq = 1
     fake_button_state = 0
 
-    print('Wrong-key attacker ready. Press button to toggle attack.')
-    print('Sending forged secure packets to %s:%d' % dest)
+    print('Wrong-key attacker ready. Press button to toggle attack. Hee hee!')
+    print('Sending FORGED secure packets to %s:%d' % dest)
 
     while True:
         current_button = button.value()
