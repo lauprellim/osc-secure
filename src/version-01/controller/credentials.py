@@ -6,11 +6,11 @@ Local configuration for the Pico W controller.
 Keep this file out of public repositories if it contains real credentials.
 '''
 
-WIFI_SSID = 'soundlab-2.4g'
+WIFI_SSID = 'miller-office-2.4g'
 # replace this with real password
-WIFI_PASSWORD = 'modernmoon901'
+WIFI_PASS = 'icygadfly894'
 
-DEST_IP = '192.168.1.4'
+DEST_IP = '192.168.1.5'
 DEST_PORT = 9000
 
 # 32-byte key is a good default for HMAC-SHA256.
