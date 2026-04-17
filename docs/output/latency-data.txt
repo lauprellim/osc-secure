@@ -1,0 +1,54 @@
+ACK seq=14  RTT=373023 us  estimated one-way=186511.5 us
+Sent seq=15
+ACK seq=15  RTT=211596 us  estimated one-way=105798.0 us
+Sent seq=16
+ACK seq=16  RTT=211622 us  estimated one-way=105811.0 us
+Sent seq=17
+ACK seq=17  RTT=212070 us  estimated one-way=106035.0 us
+Sent seq=18
+ACK seq=18  RTT=212048 us  estimated one-way=106024.0 us
+Sent seq=19
+ACK seq=19  RTT=211213 us  estimated one-way=105606.5 us
+RTT stats over 10 samples: avg=227771.3 us  min=211167 us  max=373023 us
+Sent seq=20
+ACK seq=20  RTT=212101 us  estimated one-way=106050.5 us
+Sent seq=21
+ACK seq=21  RTT=212076 us  estimated one-way=106038.0 us
+Sent seq=22
+ACK seq=22  RTT=212102 us  estimated one-way=106051.0 us
+Sent seq=23
+ACK seq=23  RTT=211174 us  estimated one-way=105587.0 us
+Sent seq=24
+ACK seq=24  RTT=211210 us  estimated one-way=105605.0 us
+Sent seq=25
+ACK seq=25  RTT=212088 us  estimated one-way=106044.0 us
+Sent seq=26
+ACK seq=26  RTT=211446 us  estimated one-way=105723.0 us
+Sent seq=27
+ACK seq=27  RTT=211172 us  estimated one-way=105586.0 us
+Sent seq=28
+ACK seq=28  RTT=211578 us  estimated one-way=105789.0 us
+Sent seq=29
+ACK seq=29  RTT=211962 us  estimated one-way=105981.0 us
+RTT stats over 20 samples: avg=219731.1 us  min=211167 us  max=373023 us
+Sent seq=30
+ACK seq=30  RTT=212074 us  estimated one-way=106037.0 us
+Sent seq=31
+ACK seq=31  RTT=212089 us  estimated one-way=106044.5 us
+Sent seq=32
+ACK seq=32  RTT=211213 us  estimated one-way=105606.5 us
+Sent seq=33
+ACK seq=33  RTT=211665 us  estimated one-way=105832.5 us
+Sent seq=34
+ACK seq=34  RTT=211730 us  estimated one-way=105865.0 us
+Sent seq=35
+ACK seq=35  RTT=211431 us  estimated one-way=105715.5 us
+Sent seq=36
+ACK seq=36  RTT=212083 us  estimated one-way=106041.5 us
+Sent seq=37
+ACK seq=37  RTT=211917 us  estimated one-way=105958.5 us
+Sent seq=38
+ACK seq=38  RTT=211362 us  estimated one-way=105681.0 us
+Sent seq=39
+ACK seq=39  RTT=212078 us  estimated one-way=106039.0 us
+RTT stats over 30 samples: avg=217075.5 us  min=211167 us  max=373023 us
