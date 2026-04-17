@@ -19,7 +19,7 @@ from osc_min import osc_pack
 from secure_packet import build_packet
 from credentials import (
     WIFI_SSID,
-    WIFI_PASSWORD,
+    WIFI_PASS,
     DEST_IP,
     DEST_PORT,
     HMAC_KEY,

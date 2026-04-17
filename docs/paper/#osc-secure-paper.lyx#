@@ -954,48 +954,16 @@ On the secured Pico,
 \end_layout
 
 \begin_layout Itemize
-
-\family typewriter
-controller.py
-\family default
- (later moved to 
-\family typewriter
-main.py
-\family default
-,
+controller.py (later moved to main.py,
  so that the Pico automatically runs this file when it powers up):
  this is the main script that connects to WiFi,
  reads data from the potentiometer and the two buttons,
- and calls 
-\family typewriter
-send_secure_osc()
-\family default
- (which in turn calls 
-\family typewriter
-osc_pack()
-\family default
- from 
-\family typewriter
-osc_min.py
-\family default
- and 
-\family typewriter
-build_packet()
-\family default
- from 
-\family typewriter
-secure_packet.py
-\family default
-.
+ and calls send_secure_osc() (which in turn calls osc_pack() and build_packet().
  It reports results to the REPL.
 \end_layout
 
 \begin_layout Itemize
-
-\family typewriter
-credentials.py
-\family default
-:
+credentials.py:
  This is a short script that contains WIFI_SSID,
  WIFI_PASS,
  DEST_IP,
@@ -1006,23 +974,15 @@ credentials.py
 \end_layout
 
 \begin_layout Itemize
-
-\family typewriter
-osc_min.py
-\family default
-:
+osc_min.py:
  this script builds the secure OSC packet
 \end_layout
 
 \begin_layout Itemize
-
-\family typewriter
-secure_packet.py
-\family default
-:
+secure_packet.py:
  this builds the header,
  calculates the HMAC-SHA256 hash,
- and truncates it to 16 bytes.
+ 
 \end_layout
 
 \begin_layout Standard
