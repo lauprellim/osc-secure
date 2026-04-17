@@ -59,9 +59,11 @@
 \use_package stackrel 1
 \use_package stmaryrd 1
 \use_package undertilde 1
-\cite_engine basic
-\cite_engine_type default
+\cite_engine biblatex-natbib
+\cite_engine_type authoryear
 \biblio_style plain
+\biblatex_bibstyle authoryear
+\biblatex_citestyle authoryear
 \use_bibtopic false
 \use_indices false
 \paperorientation portrait
@@ -133,15 +135,23 @@ OSC
 \end_layout
 
 \begin_layout Standard
-OSC (Open Sound Control) is widely used in computer music and in interactive computer systems,
- for sending live performance data efficiently.
- Very frequently the data is some musical information (such as pitch,
- control data or velocity) that is produced by some sort of human interface.
- Many software controllers are available online such as TouchOSC or Protokol.
- These kinds of controllers typically allow the user to design an interface that can include buttons,
+OSC (Open Sound Control) is widely used in computer music and interactive computer systems for sending live performance data efficiently.
+ Very frequently the data is some musical control information (such as pitch,
+ glide or velocity) that is produced by some sort of human interface.
+ Many OSC software controllers are available online such as TouchOSC or Protokol,
+ that will work on a 
+\begin_inset Quotes eld
+\end_inset
+
+smart
+\begin_inset Quotes erd
+\end_inset
+
+-phone.
+ These software implementations typically allow the user to design an interface that can include virtual buttons,
  sliders,
  knobs,
- or other kinds of control surfaces that send control data to another application.
+ or other kinds of control surfaces that send data to a synthesizer or other receiving application.
  A typical setup is shown below.
 \end_layout
 
@@ -152,10 +162,6 @@ alignment document
 wide false
 sideways false
 status open
-
-\begin_layout Plain Layout
-
-\end_layout
 
 \begin_layout Plain Layout
 \align center
@@ -170,7 +176,7 @@ status open
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-TouchOSC setup (from TouchOSC's web site)
+TouchOSC setup (image from TouchOSC's web site)
 \end_layout
 
 \end_inset
@@ -191,16 +197,14 @@ TouchOSC setup (from TouchOSC's web site)
 It is also possible to build one's own physical controllers out of hardware components such as sliders,
  buttons,
  potentiometers,
- or even sensors ranging from the very inexpensive and ubiquitous ultrasonic distance sensor (HCSR04) to more complex sensors such as accellerometers,
- gyroscopes or magnetometers (e.g.
+ or even more sophisticated sensors (e.g.
  LSM9DS1 or BNO055).
- A small inexpensive microcontroller such as a Raspberry Pi Pico W can then format the data into an OSC message.
- An OSC message can combine several kinds of data into one line,
- making it flexible.
+ A small inexpensive microcontroller such as a Raspberry Pi Pico W can then format the data into an OSC message and send it through a wired or wireless connection.
 \end_layout
 
 \begin_layout Standard
-The OSC protocol stipulates that data types have to be labeled.
+The OSC protocol uses a heirarchical address space in which each message includes an address pattern that identifies its destination,
+ within a tree-like namespace (somewhat like a heirarchical filesystem structure).
 \begin_inset Foot
 status open
 
@@ -254,7 +258,9 @@ end{verbatim}
 
 \end_inset
 
-Must have a type tag:
+Messages must also also include the a tag that stipulates the data types being used.
+ So for the message above,
+ we need:
 \begin_inset ERT
 status open
 
@@ -294,6 +300,58 @@ the first datum is an integer,
 
 .
  The type tag always begins with a comma.
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+There are several OSC type tags in the protocol specs.
+ To summarize:
+\begin_inset Newline newline
+\end_inset
+
+numeric:
+ i,
+ f,
+ h,
+ d (integer,
+ float,
+ 8-byte int,
+ 8-byte float
+\begin_inset Newline newline
+\end_inset
+
+text/binary:
+ s,
+ b:
+ string,
+ blob (a binary blob can be of arbitrary length,
+ and can transmit audio chunks,
+ etc.)
+\begin_inset Newline newline
+\end_inset
+
+special:
+ T,
+ F,
+ N,
+ I:
+ these do not have any corresponding data bytes – the type tag alone carries information (True,
+ False,
+ Null,
+ Infinity)
+\begin_inset Newline newline
+\end_inset
+
+structure:
+ t,
+ m,
+ r (timetag,
+ MIDI,
+ color)
+\end_layout
+
+\end_inset
+
  So in the case above,
  we must do the following:
 \end_layout
@@ -323,11 +381,11 @@ Next we send the type tag string
 \end_inset
 
 ,ifs
-\family default
-
 \begin_inset Quotes erd
 \end_inset
 
+
+\family default
 ,
  which must always begin with a comma.
  It is also null-terminated and padded to a multiple of 4 bytes.
@@ -365,7 +423,7 @@ hello
 \end_deeper
 \begin_layout Standard
 These standards decrease the potential ambiguity in sending OSC messages.
- The whole idea behind OSC was to improve upon the MIDI standard which,
+ The idea behind OSC was to improve upon the MIDI standard which,
  though useful in many cases,
  is limited to 7-bit values 0-127.
 \begin_inset Foot
@@ -398,11 +456,31 @@ this byte is a continuation of the current message
 \end_inset
 
 OSC also works well with patching environments such as Max/MSP and Pd,
- because message structures can be very easily separated using the 
+ because message tree structures can be very easily separated using the 
 \family typewriter
 [route]
 \family default
  object.
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+While OSC has been widely adopted,
+ it is not without its critics.
+ See 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "summer2012loveMIDI"
+literal "false"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
@@ -413,7 +491,7 @@ Threat Model:
 \begin_layout Standard
 Sending OSC messages usually happens over UDP,
  because transmission needs to be quick and low-latency.
- UDP does not engage in the 
+ UDP does not normally engage in TCP's 
 \begin_inset Quotes eld
 \end_inset
 
@@ -423,7 +501,7 @@ three way handshake
 
  (SYN – SYN-ACK – ACK) nor does it retransmit lost packets.
  The logic behind this is that in live performance,
- it is better just to drop a lost packet than to wait for it.
+ it is usually better just to drop a lost packet than to wait for it.
 \end_layout
 
 \begin_layout Standard
@@ -442,7 +520,7 @@ spoof
  UDP doesn't have any connection state,
  sequence tracking or verification.
  So the receiver doesn't really know where a packet came from.
- This makes spoofing and injection much easier.
+ This makes spoofing and injection attacks much easier.
 \end_layout
 
 \begin_layout Subsection
@@ -554,18 +632,21 @@ Materials
 \end_layout
 
 \begin_layout Standard
-In this project I used several Raspberry Pi Pico W boards and standard,
- low-cost electronics components such as buttons,
+In this project I used four Raspberry Pi Pico W boards and standard,
+ low-cost electronics components such as breadboards,
+ jumper cables,
+ buttons,
  potentiometers,
- and LEDs.
- A separate WiFi router was an additional necessary component,
- since DuqNet does not allow ad-hoc UDP .
- The idea was to build a simple wireless OSC controller that transmitted data to a Max/MSP patch running on a Macintosh computer,
- and demonstrate how vulnerable the 
+ and simple LEDs.
+ A separate WiFi router was necessary,
+ since DuqNet does not allow ad-hoc UDP.
+ I built two victim Pico setups and two attackers to demonstrate unsecured and secured models.
+ The code was written in Python.
+ The systems are shown below:
 \end_layout
 
 \begin_layout Standard
-Also Python.
+[photographs please!]
 \end_layout
 
 \begin_layout Subsection
@@ -577,11 +658,9 @@ System Architecture
 \end_layout
 
 \begin_layout Standard
-Sender:
- Raspberry Pi Pico W;
- receiver Max/MSP (via Python);
- communication:
- UDP + OSC payload.
+The system included senders (Raspberry Pi Pico W microcontrolers);
+ a low cost consumer-grade Netgear router,
+ and a receiver (a Macintosh M1 or M4 running Python and Max/MSP 9.x).
 \end_layout
 
 \begin_layout Subsubsection
@@ -592,11 +671,19 @@ Packet Structure
 The packet consisted of a header (12 bytes) which had a version number,
  device ID,
  sequence number and payload length.
- The header was structured in the following manner
+ The header was structured in the following manner:
 \end_layout
 
 \begin_layout Enumerate
-Header (>BBIIH format string for struct.pack() and struct.unpack() in Python:
+Header (>BBIIH format string for 
+\family typewriter
+struct.pack()
+\family default
+ and 
+\family typewriter
+struct.unpack()
+\family default
+ in Python:
 \end_layout
 
 \begin_deeper
@@ -747,8 +834,8 @@ Replay Protection
 \end_layout
 
 \begin_layout Standard
-Monotonically increasing sequence numbers.
- Receiver rejects duplicates or out-of-order packets (depending on policy).
+This was implemented with monotonically increasing sequence numbers.
+ The receiver gateway rejects duplicates or out-of-order packets (depending on policy).
 \end_layout
 
 \begin_layout Subsubsection
@@ -782,20 +869,24 @@ Basic Attack Demonstration
 
 \begin_layout Standard
 As proof-of-concept,
- I simulated a trivial attack using two Raspberry Pi Pico Ws.
+ I simulated a trivial attack using two Raspberry Pi Pico Ws without any security mechanism.
  The victim simply sent OSC messages containing MIDI notes that produced a two-octave C Major arpeggio on the receiving end through a simple Max/MSP patch.
  The attacker sent random MIDI values on the same port as the victim,
  dramatically disrupting the arpeggio.
- The results can be viewed [video].
+ The MIDI notes were shown on a standard musical staff:
+\end_layout
+
+\begin_layout Standard
+[show screenshot]
 \end_layout
 
 \begin_layout Subsection
-Baseline (unsecured OSC)
+Baseline Operation
 \end_layout
 
 \begin_layout Standard
 The first log file shows the normal secure operation of the system.
- The size of each packet is correctly indicating 56 bytes.
+ The size of each packet is correctly indicated as 56 bytes:
 \end_layout
 
 \begin_layout Standard
@@ -865,7 +956,20 @@ Attack 1:
 
 \begin_layout Standard
 In the first attack,
- I sent packets with an incorrect HMAC tag
+ I sent plain OSC packets without a header or HMAC hash.
+ The gateway interprets the first 12 bytes as version,
+ flags,
+ device_id,
+ seq and payload_len,
+ so it interprets plain bytes as a 
+\begin_inset Quotes eld
+\end_inset
+
+garbage
+\begin_inset Quotes erd
+\end_inset
+
+ payload length – which in this case worked out to 29,259:
 \end_layout
 
 \begin_layout Standard
@@ -897,6 +1001,12 @@ Attack 2:
 \end_layout
 
 \begin_layout Standard
+In this case,
+ the attacker knows the packet design but has the incorrect shared key.
+ The gateway responds with DROP bad_hmac because the hashes don't match.
+\end_layout
+
+\begin_layout Standard
 \begin_inset ERT
 status open
 
@@ -922,6 +1032,15 @@ VerbatimInput{03-attack-2-wrong-key.txt}}
 \begin_layout Subsubsection
 Attack 3:
  Replayed packets
+\end_layout
+
+\begin_layout Standard
+Here,
+ the attacker has somehow captured a legitimate packet and replayed it.
+ But because of the replay mechanism,
+ the packet is received out of order.
+ The gateway rejects it,
+ while allowing legitimate packets through.
 \end_layout
 
 \begin_layout Standard
@@ -952,13 +1071,21 @@ Performance
 \end_layout
 
 \begin_layout Standard
-Latency impact?
- Computational cost on Pico W?
- Packet size overhead?
+I did an analysis of latency by making a parallel branch of the code.
+ Latency was measured in two ways:
+ first as a round-trip value using only Python,
+ and second as a gateway processing overhead on the Mac (receiving end).
+ The rount-trip method was chosen because it was not possible to synchronize clocks on the Raspberry Pi Pico W and the Mac.
 \end_layout
 
 \begin_layout Section
 Discussion
+\end_layout
+
+\begin_layout Standard
+The current weakness is that a longer OSC payload is not supported,
+ as the OSC string is limited to 28 bytes.
+ But it would be a fairly easy matter to adjust this in the code for version 2.0.
 \end_layout
 
 \begin_layout Section
@@ -968,9 +1095,8 @@ Conclusion
 \begin_layout Standard
 \begin_inset CommandInset bibtex
 LatexCommand bibtex
-btprint "btPrintCited"
+btprint "btPrintAll"
 bibfiles "osc-secure-bibliography"
-options "plain"
 encoding "default"
 
 \end_inset
