@@ -135,11 +135,10 @@ OSC
 \end_layout
 
 \begin_layout Standard
-OSC (Open Sound Control) is widely used in computer music and interactive computer systems for sending live performance data efficiently.
- Very frequently the data is some musical control information (such as pitch,
- glide or velocity) that is produced by some sort of human interface.
- Many OSC software controllers are available online such as TouchOSC or Protokol,
- that will work on a 
+OSC (Open Sound Control) is widely used in computer music and interactive computer systems for sending live performance data.
+ Very frequently the data is some musical control information (such as frequency or velocity) that is produced by some sort of human interface.
+ Many OSC software controllers are available online such as TouchOSC or Protokol;
+ frequently people install these on a so-called 
 \begin_inset Quotes eld
 \end_inset
 
@@ -147,17 +146,17 @@ smart
 \begin_inset Quotes erd
 \end_inset
 
--phone.
- These software implementations typically allow the user to design an interface that can include virtual buttons,
+-phone or tablet.
+ OSC implementations typically allow the user to design a custom interface that can include virtual buttons,
  sliders,
  knobs,
- or other kinds of control surfaces that send data to a synthesizer or other receiving application.
+ or other kinds of control surfaces that produce data that is sent to a synthesizer or other application.
  A typical setup is shown below.
 \end_layout
 
 \begin_layout Standard
 \begin_inset Float figure
-placement document
+placement H
 alignment document
 wide false
 sideways false
@@ -202,9 +201,14 @@ It is also possible to build one's own physical controllers out of hardware comp
  A small inexpensive microcontroller such as a Raspberry Pi Pico W can then format the data into an OSC message and send it through a wired or wireless connection.
 \end_layout
 
+\begin_layout Subsection
+OSC Encoding:
+ The Details
+\end_layout
+
 \begin_layout Standard
-The OSC protocol uses a heirarchical address space in which each message includes an address pattern that identifies its destination,
- within a tree-like namespace (somewhat like a heirarchical filesystem structure).
+The OSC protocol uses a heirarchical address space in which each message includes an address pattern that identifies its destination on the receiving end,
+ within a tree-like namespace (somewhat akin to a heirarchical filesystem structure).
 \begin_inset Foot
 status open
 
@@ -221,8 +225,70 @@ literal "false"
 
 \end_inset
 
- So a message that mixes data types such as integer and float,
- such as:
+ The idea behind OSC was to improve upon the MIDI standard which,
+ though useful in many cases,
+ is limited to 7-bit values 0-127.
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+The most significant bit in MIDI (the 8th bit) distinguishes status bytes from data bytes,
+ allowing the system to differentiate between 
+\begin_inset Quotes eld
+\end_inset
+
+starting a new message
+\begin_inset Quotes erd
+\end_inset
+
+ (status byte) and 
+\begin_inset Quotes eld
+\end_inset
+
+this byte is a continuation of the current message
+\begin_inset Quotes erd
+\end_inset
+
+ (data).
+ The designers of MIDI understood that there would probably only be 127 discrete values for pitch and volume,
+ so they left it at that.
+ This corresponds (very) roughly to the number of keys on the modern Steinway piano (88).
+ The MIDI standard becomes more problematic when users require sending other kinds of performance data,
+ particularly more granular information.
+\end_layout
+
+\end_inset
+
+OSC also works well with patching environments such as Max/MSP and Pd,
+ because message tree structures can be very easily separated using the 
+\family typewriter
+[route]
+\family default
+ object.
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+While OSC has been widely adopted,
+ it is not without its critics.
+ See 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "summer2012loveMIDI"
+literal "false"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+A message can mix data types such as integer and float:
 \end_layout
 
 \begin_layout Standard
@@ -258,7 +324,8 @@ end{verbatim}
 
 \end_inset
 
-Messages must also also include the a tag that stipulates the data types being used.
+This is the format that most naive users see.
+ But OSC messages must also also include the a tag that stipulates the data types being used.
  So for the message above,
  we need:
 \begin_inset ERT
@@ -309,7 +376,11 @@ There are several OSC type tags in the protocol specs.
 \begin_inset Newline newline
 \end_inset
 
-numeric:
+
+\series bold
+numeric
+\series default
+:
  i,
  f,
  h,
@@ -320,7 +391,11 @@ numeric:
 \begin_inset Newline newline
 \end_inset
 
-text/binary:
+
+\series bold
+text/binary
+\series default
+:
  s,
  b:
  string,
@@ -330,7 +405,11 @@ text/binary:
 \begin_inset Newline newline
 \end_inset
 
-special:
+
+\series bold
+special
+\series default
+:
  T,
  F,
  N,
@@ -342,22 +421,26 @@ special:
 \begin_inset Newline newline
 \end_inset
 
-structure:
+
+\series bold
+structural
+\series default
+:
  t,
  m,
  r (timetag,
  MIDI,
- color)
+ color in a 4-byte RGBA format!)
 \end_layout
 
 \end_inset
 
- So in the case above,
+ So to encode the control message above,
  we must do the following:
 \end_layout
 
 \begin_layout Enumerate
-first send the address string 
+First encode the address string in hexadecimal 
 \begin_inset Quotes eld
 \end_inset
 
@@ -370,11 +453,14 @@ first send the address string
 \end_inset
 
 ,
- which is null-terminated and padded to a multiple of 4 bytes.
+ which is null-terminated and padded to a multiple of 4 bytes (in this particular case we have 16 bytes for the string,
+ plus 1 for the null termination and then 3 more for padding,
+ resulting in a final payload of 20 bytes);
 \end_layout
 
 \begin_layout Enumerate
-Next we send the type tag string 
+Next,
+ encode the type tag string 
 \family typewriter
 
 \begin_inset Quotes eld
@@ -387,12 +473,14 @@ Next we send the type tag string
 
 \family default
 ,
- which must always begin with a comma.
- It is also null-terminated and padded to a multiple of 4 bytes.
+ which must begin with a comma.
+ It is also null-terminated and padded to a multiple of 4 bytes (in this specific case we have a four-byte tag,
+ which means we need 1 more byte for the null termination and then 3 more bytes for padding,
+ resulting in 8 bytes);
 \end_layout
 
 \begin_layout Enumerate
-Finally we can send the arguments.
+Finally we can send the arguments:
 \end_layout
 
 \begin_deeper
@@ -423,64 +511,6 @@ hello
 \end_deeper
 \begin_layout Standard
 These standards decrease the potential ambiguity in sending OSC messages.
- The idea behind OSC was to improve upon the MIDI standard which,
- though useful in many cases,
- is limited to 7-bit values 0-127.
-\begin_inset Foot
-status open
-
-\begin_layout Plain Layout
-The most significant bit in MIDI is used to distinguish between status bytes and data bytes,
- allowing the system to distinguish between 
-\begin_inset Quotes eld
-\end_inset
-
-starting a new message
-\begin_inset Quotes erd
-\end_inset
-
- (status byte) or 
-\begin_inset Quotes eld
-\end_inset
-
-this byte is a continuation of the current message
-\begin_inset Quotes erd
-\end_inset
-
- (data).
- The designers of MIDI understood that there would probably only be 127 discrete values for pitch and volume,
- so they left it at that;
- the MIDI standard becomes more problematic when users require sending other kinds of performance data.
-\end_layout
-
-\end_inset
-
-OSC also works well with patching environments such as Max/MSP and Pd,
- because message tree structures can be very easily separated using the 
-\family typewriter
-[route]
-\family default
- object.
-\begin_inset Foot
-status open
-
-\begin_layout Plain Layout
-While OSC has been widely adopted,
- it is not without its critics.
- See 
-\begin_inset CommandInset citation
-LatexCommand cite
-key "summer2012loveMIDI"
-literal "false"
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Subsection
@@ -702,6 +732,7 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\align center
 
 \end_layout
 
@@ -730,6 +761,7 @@ Secured system (left),
 \end_layout
 
 \begin_layout Plain Layout
+\align center
 
 \end_layout
 
@@ -897,7 +929,7 @@ Finally we have the HMAC-SHA256 tag.
 \end_inset
 
  possible tags,
- which is secure enough).
+ which is probably secure enough).
  I decided to truncate the hash to save some overhead and improve latency,
  which is very important.
  The keyed hash is computed over the header AND the payload.
@@ -916,6 +948,7 @@ Authentication Mechanism
 This is HMAC-SHA256 over (header || OSC payload).
  This is truncated to 16 bytes.
  The key is NOT transmitted and is shared out of band.
+ Sharing the key is therefore the responsibility of the people implementing the system.
 \end_layout
 
 \begin_layout Subsubsection
@@ -932,23 +965,6 @@ Implementation Details
 \end_layout
 
 \begin_layout Standard
-On the baseline attack Picos,
- we need the following files:
-\end_layout
-
-\begin_layout Itemize
-a
-\end_layout
-
-\begin_layout Itemize
-b
-\end_layout
-
-\begin_layout Itemize
-c
-\end_layout
-
-\begin_layout Standard
 On the secured Pico,
  we need the following files:
 \end_layout
@@ -962,8 +978,27 @@ controller.py
 \family typewriter
 main.py
 \family default
-,
- so that the Pico automatically runs this file when it powers up):
+):
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+This discrepancy is due to the fact that MicroPython will automatically execute any file named 
+\begin_inset Quotes eld
+\end_inset
+
+main.py
+\begin_inset Quotes erd
+\end_inset
+
+ on powerful on the Pico.
+ It is therefore quite advantageous to develop and test main.py using some alternative filename to prevent the system from accidentally executing it on powerup.
+ When deployed,
+ the file is moved to main.py.
+\end_layout
+
+\end_inset
+
  this is the main script that connects to WiFi,
  reads data from the potentiometer and the two buttons,
  and calls 
@@ -1026,16 +1061,65 @@ secure_packet.py
 \end_layout
 
 \begin_layout Standard
-Python authentication and decoding program on Macintosh:
+On the attacker Pico,
+ we need:
+\end_layout
+
+\begin_layout Itemize
+
+\family typewriter
+attackx.py:
+
+\family default
+ this is the script that perpetrates the attack.
+ There are three of these:
+ 
+\family typewriter
+attack1.py
+\family default
+,
+ 
+\family typewriter
+attack2.py
+\family default
+ and 
+\family typewriter
+attack3.py
+\family default
+;
+\end_layout
+
+\begin_layout Itemize
+
+\family typewriter
+credentials.py
+\family default
+:
+ this is where forged credentials live,
+ as well as all the other global variables such as WIFI_SSID,
+ etc.;
+\end_layout
+
+\begin_layout Itemize
+
+\family typewriter
+osc_min.py
+\family default
+:
+ this is exactly the same as on the secured Pico,
+ and builds OSC packets.
 \end_layout
 
 \begin_layout Standard
-Usage in Max/MSP:
-\end_layout
-
-\begin_layout Standard
-The system sends packets to port 9000,
- and the gateway forward them to port 8000 via the loopback.
+The Picos send their packets to port 9000,
+ which is what 
+\family typewriter
+gateway.py
+\family default
+ listens for on the Mac.
+ After the packets are received from the socket and processed,
+ the gateway sends diagnostic messages (logs) to stdio.
+ It then forwards legitimate OSC to localhost on port 8000 for Max/MSP to listen to.
 \end_layout
 
 \begin_layout Section
@@ -1064,18 +1148,62 @@ Basic Attack Demonstration
 \begin_layout Standard
 As proof-of-concept,
  I simulated a trivial attack using two Raspberry Pi Pico Ws without any security mechanism.
- The victim simply sent OSC messages containing MIDI notes that produced a two-octave C Major arpeggio on the receiving end through a simple Max/MSP patch.
+ The victim simply sent OSC messages containing MIDI notes that produced a three-octave C Major arpeggio on the receiving end through a simple Max/MSP patch.
  The attacker sent random MIDI values on the same port as the victim,
  dramatically disrupting the arpeggio.
- The MIDI notes were shown on a standard musical staff:
+ The MIDI notes were shown on a standard musical staff as they were received and processed.
+ The following screenshot shows the results of the attack on the musical staff in Max/MSP:
 \end_layout
 
 \begin_layout Standard
-[show screenshot]
+\begin_inset Float figure
+placement H
+alignment document
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename unsecured-attack-video.png
+	lyxscale 15
+	scale 20
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Screenshot from YouTube Video showing attack on unsecured OSC
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
-Baseline Operation
+Secured System Behavior
+\end_layout
+
+\begin_layout Subsubsection
+Secure System:
+ Baseline Operation
 \end_layout
 
 \begin_layout Standard
@@ -1138,14 +1266,20 @@ VerbatimInput{02-log-listen-udp.txt}}
 
 \end_layout
 
-\begin_layout Subsection
-Secured System Behavior
+\begin_layout Standard
+To verify packets were being correctly received by Max,
+ I built a second patch that mapped potentiometer value to frequency and each of the two buttons to a simple amplitude envelope of varying duration.
+ The Max patch conveniently included a message that spawned a shell,
+ which executed a trivial shell script that in turn started the 
+\family typewriter
+gateway.py
+\family default
+ program.
 \end_layout
 
 \begin_layout Subsubsection
 Attack 1:
- Sending plain OSC without the proper header,
- etc.
+ Sending plain OSC without the proper header
 \end_layout
 
 \begin_layout Standard
@@ -1191,6 +1325,7 @@ VerbatimInput{03-attack-1-plain-osc.txt}}
 
 \begin_layout Subsubsection
 Attack 2:
+ Correct packet structure,
  Wrong key
 \end_layout
 
@@ -1231,9 +1366,21 @@ Attack 3:
 \begin_layout Standard
 Here,
  the attacker has somehow captured a legitimate packet and replayed it.
- But because of the replay mechanism,
- the packet is received out of order.
- The gateway rejects it,
+ In this demonstration,
+ I recorded packets and inserted a valid one into the attacker's Python code.
+ A more clever hacker who positioned themselves on the network and ran some capture software such as WireShark might be able to capture packets on the wire.
+\end_layout
+
+\begin_layout Standard
+Regardless of how the legitimate packet was captured,
+ my system rejects it because it is received 
+\shape italic
+out of order
+\shape default
+.
+ The packets are not encrypted,
+ so this kind of attack is still possible.
+ Nevertheless the gateway rejects the out-of-order packet,
  while allowing legitimate packets through.
 \end_layout
 
@@ -1267,9 +1414,419 @@ Performance
 \begin_layout Standard
 I did an analysis of latency by making a parallel branch of the code.
  Latency was measured in two ways:
- first as a round-trip value using only Python,
- and second as a gateway processing overhead on the Mac (receiving end).
- The rount-trip method was chosen because it was not possible to synchronize clocks on the Raspberry Pi Pico W and the Mac.
+ first as a round-trip timing (RTT),
+ and second as gateway processing overhead on the Mac (receiving end).
+ The rount-trip method was chosen because it is not possible to synchronize clocks on the Raspberry Pi Pico W and the Mac.
+\end_layout
+
+\begin_layout Standard
+The results of analyzing 30 packets reveal much interesting information.
+ The round-trip packets on the Pico are almost the same for plain OSC and secure OSC.
+ Plain RTT averaged 211.1 - 212.0ms for most samples,
+ with one outlier at 310.8ms.
+ Secure RTT also averaged 211.2 - 212.2ms for most samples,
+ with one larger outlier at 512.8ms.
+ This data allows me to conclude that the practical end-to-end RTT in the project is dominated by something other than HMAC verification – most likely,
+ the latency in WiFi variability.
+\end_layout
+
+\begin_layout Standard
+A better indication of the actual cost of the security layer was gateway-side timing.
+ Gateway-side timing is the time spent to parse,
+ verify and forward secure OSC packets to the loopback after it has been received by the OS.
+ This includes the time it takes to:
+ 
+\end_layout
+
+\begin_layout Itemize
+extract version,
+ flags,
+ device_id,
+ seq,
+ payload_len;
+\end_layout
+
+\begin_layout Itemize
+check the length of the data to make sure it conforms to expected_len;
+\end_layout
+
+\begin_layout Itemize
+check the recovered HMAC tag to make sure it conforms to the expected tag (using 
+\family typewriter
+hmac.compare_digest()
+\family default
+...)
+\end_layout
+
+\begin_layout Itemize
+enforce replay protection;
+\end_layout
+
+\begin_layout Itemize
+and finally,
+ forward the verified OSC string to the loopback (
+\family typewriter
+forward_sock.sendto(payload,
+ ('127.0.0.1',
+ 8000)
+\family default
+).
+\end_layout
+
+\begin_layout Standard
+Notably,
+ gateway-side timing explicitly 
+\shape italic
+does not 
+\shape default
+include the network transit time it takes the packet to move from the Pico to the Mac,
+ or socket receieve blocking time.
+ The timer starts only 
+\shape italic
+after
+\shape default
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{Verbatim}
+\end_layout
+
+\begin_layout Plain Layout
+
+recv_sock.bind(('0.0.0.0',
+ 9000))
+\end_layout
+
+\begin_layout Plain Layout
+
+data,addr = recv_sock.recvfrom(...)
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{Verbatim}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+receives a packet from the OS socket.
+\end_layout
+
+\begin_layout Standard
+In the plain gateway-side timing,
+ processing time averaged about 160.8
+\begin_inset Formula $\mu s$
+\end_inset
+
+ over 30 packets,
+ with a range of 97.2 – 210.0
+\begin_inset Formula $\mu s$
+\end_inset
+
+,
+ while in the secure gateway-side timing,
+ processing averaged 218.6
+\begin_inset Formula $\mu s$
+\end_inset
+
+ with a rage of 146.9 – 366.5
+\begin_inset Formula $\mu s$
+\end_inset
+
+.
+ So we can conclude that 
+\series bold
+the secure version adds about 58
+\begin_inset Formula $\mu s$
+\end_inset
+
+ on average
+\series default
+ to the gateway overhead compared to the plain OSC.
+ This is negligible in the large scheme of things.
+ The results are summarized in the table below.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+placement H
+alignment document
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="5" columns="4">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+Measurement
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+Range
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+Mean
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+Outlier(s)
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Plain OSC:
+ Round-Trip Time
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+211.1 – 212.0 ms
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+211.5 ms
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+310.8 ms
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Secure OSC:
+ Round-Trip Time
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+211.2 – 212.2 ms
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+211.8 ms
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+512.8 ms
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Plain OSC:
+ Gateway Processing Time
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+97.2 – 210.0 
+\begin_inset Formula $\mu s$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+168.8 
+\begin_inset Formula $\mu s$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+none
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Secure OSC:
+ Gateway Processing Time
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+146.9 – 366.5 
+\begin_inset Formula $\mu s$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+218.6 
+\begin_inset Formula $\mu s$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+366.5 
+\begin_inset Formula $\mu s$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Latency Times as Measured over 30 Packets
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -1279,11 +1836,31 @@ Discussion
 \begin_layout Standard
 The current weakness is that a longer OSC payload is not supported,
  as the OSC string is limited to 28 bytes.
- But it would be a fairly easy matter to adjust this in the code for version 2.0.
+ A design goal for a potential version 2.0 would be to make the OSC payload variable and consequently more flexible.
 \end_layout
 
 \begin_layout Section
 Conclusion
+\end_layout
+
+\begin_layout Standard
+Importantly,
+ my system provides 
+\shape italic
+integrity
+\shape default
+ through HMAC,
+ 
+\shape italic
+authenticity
+\shape default
+ through a shared key,
+ but not confidentiality as there is no encryption.
+ This was a purposeful design choice,
+ as I did not want to increase latency by introducing an encryption/decrypion layer.
+ However,
+ noting that the cost of the current system is so low,
+ adding encryption might be worth pursuing in the future.
 \end_layout
 
 \begin_layout Standard
