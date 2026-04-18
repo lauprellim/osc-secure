@@ -1164,10 +1164,6 @@ sideways false
 status open
 
 \begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
 \align center
 \begin_inset Graphics
 	filename unsecured-attack-video.png
@@ -1185,10 +1181,6 @@ Screenshot from YouTube Video showing attack on unsecured OSC
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Plain Layout
 
 \end_layout
 
@@ -1275,6 +1267,40 @@ To verify packets were being correctly received by Max,
 gateway.py
 \family default
  program.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+alignment document
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename secured-attack-video.png
+	lyxscale 15
+	scale 20
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Screenshot from YouTube Video showing attack on secured OSC
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsubsection
