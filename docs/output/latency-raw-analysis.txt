@@ -1,0 +1,13 @@
+Raw analysis of latency data
+
+The round-trip measurements on the Pico are almost the same for plain OSC and secure OSC in steady state. Plain RTT settled around 211.1–212.0 ms for most samples, with one outlier at 310.8 ms. Secure RTT also settled around 211.2–212.2 ms for most samples, with one larger outlier at 512.8 ms. That means the practical end-to-end RTT in your prototype is dominated by something other than HMAC verification—most likely the polling / ACK structure of the latency test itself, plus general scheduling and Wi-Fi variability. In other words, the Pico-side RTT experiment is useful as a prototype-level latency measurement, but it is not very sensitive to the added cost of the security layer.  ￼  ￼
+
+A better indicator of the actual cost of the security layer is the gateway-side timing. In the plain gateway test, processing time averaged about 160.8 µs over 30 packets, with a range of 97.2–210.0 µs. In the secure gateway test, processing time averaged about 218.6 µs over 30 packets, with a range of 146.9–366.5 µs. So the secure version adds roughly 58 µs of average gateway overhead compared to plain OSC. That is the cleanest estimate of the cost of parsing the secure header, recomputing the HMAC, and doing the sequence-number checks.  ￼  ￼
+
+So the strongest conclusion is this: the security layer adds a small amount of processing time at the gateway, but that extra cost is negligible compared to the much larger application-level round-trip latency you measured on the Pico. Put differently, your current RTT method is capturing the latency of the whole prototype loop, while the gateway timings isolate the actual security cost much more effectively.  ￼  ￼  ￼  ￼
+
+A good way to phrase this in the paper would be:
+
+In steady state, round-trip latency for both plain and secure OSC remained near 211–212 ms, suggesting that application-level polling and acknowledgment behavior dominated end-to-end timing. By contrast, gateway-side measurements showed that secure packet verification increased processing time by only about 58 µs on average relative to plain OSC, indicating that the cryptographic overhead itself was very small.
+
+Two presentation notes. First, I would treat the 310.8 ms and 512.8 ms samples as startup or scheduling outliers and mention them explicitly rather than letting them dominate the averages. Second, if you report a one-way estimate from the Pico logs, I would describe it as RTT/2 under an approximate symmetry assumption, not as a direct one-way measurement.
