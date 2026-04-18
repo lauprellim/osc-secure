@@ -1,0 +1,40 @@
+millerp3@millerp3-ms: /Users/millerp3/Desktop/cs/sec/osc-secure/src/version-02 % $ python3 gateway-latency-plain.py
+Plain gateway latency test listening on 0.0.0.0:9000
+Forwarding plain OSC to 127.0.0.1:8000
+Sending ACKs back on port 9001
+
+ACCEPT seq=1 payload_len=24 gateway_us=175.6  stats: ok=1 bad_parse=0
+ACCEPT seq=2 payload_len=24 gateway_us=210.0  stats: ok=2 bad_parse=0
+ACCEPT seq=3 payload_len=24 gateway_us=192.7  stats: ok=3 bad_parse=0
+ACCEPT seq=4 payload_len=24 gateway_us=187.0  stats: ok=4 bad_parse=0
+ACCEPT seq=5 payload_len=24 gateway_us=191.5  stats: ok=5 bad_parse=0
+ACCEPT seq=6 payload_len=24 gateway_us=191.3  stats: ok=6 bad_parse=0
+ACCEPT seq=7 payload_len=24 gateway_us=165.8  stats: ok=7 bad_parse=0
+ACCEPT seq=8 payload_len=24 gateway_us=186.4  stats: ok=8 bad_parse=0
+ACCEPT seq=9 payload_len=24 gateway_us=167.4  stats: ok=9 bad_parse=0
+ACCEPT seq=10 payload_len=24 gateway_us=153.9  stats: ok=10 bad_parse=0
+Plain gateway timing over 10 accepted packets: avg=182.2 us min=153.9 us max=210.0 us
+
+ACCEPT seq=11 payload_len=24 gateway_us=132.7  stats: ok=11 bad_parse=0
+ACCEPT seq=12 payload_len=24 gateway_us=161.7  stats: ok=12 bad_parse=0
+ACCEPT seq=13 payload_len=24 gateway_us=206.5  stats: ok=13 bad_parse=0
+ACCEPT seq=14 payload_len=24 gateway_us=127.3  stats: ok=14 bad_parse=0
+ACCEPT seq=15 payload_len=24 gateway_us=156.8  stats: ok=15 bad_parse=0
+ACCEPT seq=16 payload_len=24 gateway_us=170.2  stats: ok=16 bad_parse=0
+ACCEPT seq=17 payload_len=24 gateway_us=138.6  stats: ok=17 bad_parse=0
+ACCEPT seq=18 payload_len=24 gateway_us=103.8  stats: ok=18 bad_parse=0
+ACCEPT seq=19 payload_len=24 gateway_us=97.2  stats: ok=19 bad_parse=0
+ACCEPT seq=20 payload_len=24 gateway_us=186.2  stats: ok=20 bad_parse=0
+Plain gateway timing over 20 accepted packets: avg=165.1 us min=97.2 us max=210.0 us
+
+ACCEPT seq=21 payload_len=24 gateway_us=159.7  stats: ok=21 bad_parse=0
+ACCEPT seq=22 payload_len=24 gateway_us=151.4  stats: ok=22 bad_parse=0
+ACCEPT seq=23 payload_len=24 gateway_us=101.4  stats: ok=23 bad_parse=0
+ACCEPT seq=24 payload_len=24 gateway_us=119.1  stats: ok=24 bad_parse=0
+ACCEPT seq=25 payload_len=24 gateway_us=168.1  stats: ok=25 bad_parse=0
+ACCEPT seq=26 payload_len=24 gateway_us=118.6  stats: ok=26 bad_parse=0
+ACCEPT seq=27 payload_len=24 gateway_us=197.4  stats: ok=27 bad_parse=0
+ACCEPT seq=28 payload_len=24 gateway_us=168.1  stats: ok=28 bad_parse=0
+ACCEPT seq=29 payload_len=24 gateway_us=158.5  stats: ok=29 bad_parse=0
+ACCEPT seq=30 payload_len=24 gateway_us=179.4  stats: ok=30 bad_parse=0
+Plain gateway timing over 30 accepted packets: avg=160.8 us min=97.2 us max=210.0 us

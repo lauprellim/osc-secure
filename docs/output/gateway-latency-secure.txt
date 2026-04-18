@@ -1,0 +1,40 @@
+millerp3@millerp3-ms: /Users/millerp3/Desktop/cs/sec/osc-secure/src/version-02 % $ python3 gateway-latency-secure.py
+Gateway latency test listening on 0.0.0.0:9000
+Forwarding verified OSC to 127.0.0.1:8000
+Sending ACKs back on port 9001
+
+ACCEPT device=1 seq=1 payload_len=24 total=52 gateway_us=366.5  stats: ok=1 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=2 payload_len=24 total=52 gateway_us=212.1  stats: ok=2 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=3 payload_len=24 total=52 gateway_us=176.8  stats: ok=3 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=4 payload_len=24 total=52 gateway_us=169.5  stats: ok=4 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=5 payload_len=24 total=52 gateway_us=255.0  stats: ok=5 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=6 payload_len=24 total=52 gateway_us=272.9  stats: ok=6 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=7 payload_len=24 total=52 gateway_us=241.6  stats: ok=7 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=8 payload_len=24 total=52 gateway_us=235.3  stats: ok=8 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=9 payload_len=24 total=52 gateway_us=234.2  stats: ok=9 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=10 payload_len=24 total=52 gateway_us=162.9  stats: ok=10 hmac=0 replay=0 len=0 bad_version_count=0
+Gateway timing over 10 accepted packets: avg=232.7 us min=162.9 us max=366.5 us
+
+ACCEPT device=1 seq=11 payload_len=24 total=52 gateway_us=270.3  stats: ok=11 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=12 payload_len=24 total=52 gateway_us=220.9  stats: ok=12 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=13 payload_len=24 total=52 gateway_us=225.3  stats: ok=13 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=14 payload_len=24 total=52 gateway_us=183.7  stats: ok=14 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=15 payload_len=24 total=52 gateway_us=163.9  stats: ok=15 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=16 payload_len=24 total=52 gateway_us=232.8  stats: ok=16 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=17 payload_len=24 total=52 gateway_us=146.9  stats: ok=17 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=18 payload_len=24 total=52 gateway_us=219.3  stats: ok=18 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=19 payload_len=24 total=52 gateway_us=223.0  stats: ok=19 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=20 payload_len=24 total=52 gateway_us=216.3  stats: ok=20 hmac=0 replay=0 len=0 bad_version_count=0
+Gateway timing over 20 accepted packets: avg=221.5 us min=146.9 us max=366.5 us
+
+ACCEPT device=1 seq=21 payload_len=24 total=52 gateway_us=219.2  stats: ok=21 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=22 payload_len=24 total=52 gateway_us=227.8  stats: ok=22 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=23 payload_len=24 total=52 gateway_us=231.5  stats: ok=23 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=24 payload_len=24 total=52 gateway_us=154.2  stats: ok=24 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=25 payload_len=24 total=52 gateway_us=214.6  stats: ok=25 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=26 payload_len=24 total=52 gateway_us=161.6  stats: ok=26 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=27 payload_len=24 total=52 gateway_us=247.6  stats: ok=27 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=28 payload_len=24 total=52 gateway_us=221.4  stats: ok=28 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=29 payload_len=24 total=52 gateway_us=234.5  stats: ok=29 hmac=0 replay=0 len=0 bad_version_count=0
+ACCEPT device=1 seq=30 payload_len=24 total=52 gateway_us=217.2  stats: ok=30 hmac=0 replay=0 len=0 bad_version_count=0
+Gateway timing over 30 accepted packets: avg=218.6 us min=146.9 us max=366.5 us

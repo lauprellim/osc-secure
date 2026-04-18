@@ -1,0 +1,70 @@
+MicroPython v1.28.0 on 2026-04-06; Raspberry Pi Pico W with RP2040
+Type "help()" for more information.
+>>> %run -c $EDITOR_CONTENT
+WiFi connected.
+Pico IP = 192.168.1.8
+Plain OSC latency controller ready.
+Send to 192.168.1.5:9000, listen for ACK on port 9001
+Sent seq=1
+ACK seq=1  RTT=211312 us  estimated one-way=105656.0 us
+Sent seq=2
+ACK seq=2  RTT=310809 us  estimated one-way=155404.5 us
+Sent seq=3
+ACK seq=3  RTT=211388 us  estimated one-way=105694.0 us
+Sent seq=4
+ACK seq=4  RTT=211481 us  estimated one-way=105740.5 us
+Sent seq=5
+ACK seq=5  RTT=211939 us  estimated one-way=105969.5 us
+Sent seq=6
+ACK seq=6  RTT=211363 us  estimated one-way=105681.5 us
+Sent seq=7
+ACK seq=7  RTT=211904 us  estimated one-way=105952.0 us
+Sent seq=8
+ACK seq=8  RTT=211771 us  estimated one-way=105885.5 us
+Sent seq=9
+ACK seq=9  RTT=211972 us  estimated one-way=105986.0 us
+Sent seq=10
+ACK seq=10  RTT=211322 us  estimated one-way=105661.0 us
+RTT stats over 10 samples: avg=221526.1 us  min=211312 us  max=310809 us
+Sent seq=11
+ACK seq=11  RTT=211301 us  estimated one-way=105650.5 us
+Sent seq=12
+ACK seq=12  RTT=211693 us  estimated one-way=105846.5 us
+Sent seq=13
+ACK seq=13  RTT=211861 us  estimated one-way=105930.5 us
+Sent seq=14
+ACK seq=14  RTT=211911 us  estimated one-way=105955.5 us
+Sent seq=15
+ACK seq=15  RTT=211106 us  estimated one-way=105553.0 us
+Sent seq=16
+ACK seq=16  RTT=211061 us  estimated one-way=105530.5 us
+Sent seq=17
+ACK seq=17  RTT=211396 us  estimated one-way=105698.0 us
+Sent seq=18
+ACK seq=18  RTT=211822 us  estimated one-way=105911.0 us
+Sent seq=19
+ACK seq=19  RTT=211801 us  estimated one-way=105900.5 us
+Sent seq=20
+ACK seq=20  RTT=211905 us  estimated one-way=105952.5 us
+RTT stats over 20 samples: avg=216555.9 us  min=211061 us  max=310809 us
+Sent seq=21
+ACK seq=21  RTT=211855 us  estimated one-way=105927.5 us
+Sent seq=22
+ACK seq=22  RTT=211874 us  estimated one-way=105937.0 us
+Sent seq=23
+ACK seq=23  RTT=211081 us  estimated one-way=105540.5 us
+Sent seq=24
+ACK seq=24  RTT=211872 us  estimated one-way=105936.0 us
+Sent seq=25
+ACK seq=25  RTT=211916 us  estimated one-way=105958.0 us
+Sent seq=26
+ACK seq=26  RTT=211894 us  estimated one-way=105947.0 us
+Sent seq=27
+ACK seq=27  RTT=211703 us  estimated one-way=105851.5 us
+Sent seq=28
+ACK seq=28  RTT=211925 us  estimated one-way=105962.5 us
+Sent seq=29
+ACK seq=29  RTT=211154 us  estimated one-way=105577.0 us
+Sent seq=30
+ACK seq=30  RTT=211923 us  estimated one-way=105961.5 us
+RTT stats over 30 samples: avg=214943.8 us  min=211061 us  max=310809 us
