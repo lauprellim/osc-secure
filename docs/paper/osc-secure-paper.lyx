@@ -1946,7 +1946,7 @@ Discussion
 
 \begin_layout Standard
 This lightweight system for authenticating OSC over UDP worked well,
- added only an insignificant amount of latency,
+ added an insignificant amount of latency,
  and survived three simulated attacks.
  When a user installs the Python code on the transmitting and receiving ends,
  the system's security increases dramatically.
@@ -1955,10 +1955,14 @@ This lightweight system for authenticating OSC over UDP worked well,
 \begin_layout Standard
 The most significant weakness in the current system is that a longer OSC payload is not supported,
  because the OSC string is limited to 28 bytes.
- A design goal for a potential version 2.0 would be to make the OSC payload variable.
- It is the user who should determine the size of the OSC payload,
+ A design goal for a potential version 2.0 would be to allow for a variable-length OSC payload.
+ Ultimately,
+ the user should determine the length of the OSC command string,
  not the system.
  A future version would respond to whatever length OSC string the user sent into it (within reason).
+ Because the processing time of each packet is essentially insignificant,
+ there is considerable headroom remaining,
+ which could accommodate longer strings.
 \end_layout
 
 \begin_layout Section
