@@ -1353,6 +1353,7 @@ gateway.py
 gateway.py
 \family default
 .
+ This mechanism allows the Max user to start and stop the secure system from within Max itself.
 \end_layout
 
 \begin_layout Standard
