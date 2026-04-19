@@ -136,9 +136,9 @@ OSC
 
 \begin_layout Standard
 OSC (Open Sound Control) is widely used in computer music and interactive systems for sending live performance data.
- Very frequently the data is some musical control information (such as frequency or velocity) that is produced by a human interface.
- Many OSC software controllers are available online such as TouchOSC or Protokol;
- frequently people install these on a so-called 
+ Very frequently the data is some musical control information (such as frequency or amplitude) that is produced by a human interface.
+ Many OSC software controllers are available online such as TouchOSC or Protokol.
+ Users can install these on a so-called 
 \begin_inset Quotes eld
 \end_inset
 
@@ -150,7 +150,7 @@ smart
  These applications frequently allow the user to design a custom interface that can include virtual buttons,
  sliders,
  knobs,
- or other kinds of control surfaces that produce data for a synthesizer or some other kind of application.
+ or other kinds of control UIs that produce data for a synthesizer or some other kind of application.
  A typical setup is shown below.
 \end_layout
 
@@ -198,7 +198,7 @@ It is also possible to build one's own physical controllers out of hardware comp
  potentiometers,
  or even more sophisticated sensors (e.g.
  LSM9DS1 or BNO055).
- A small inexpensive microcontroller such as a Raspberry Pi Pico W can then format the data into an OSC message and send it through a wired or wireless connection.
+ A small inexpensive microcontroller such as a Raspberry Pi Pico W can then run code that formats the data into an OSC message and send it through a wired or wireless connection.
 \end_layout
 
 \begin_layout Subsection
@@ -258,7 +258,7 @@ this byte is a continuation of the current message
 
 \end_inset
 
-OSC is designed to work well with patching environments such as Max/MSP and Pd,
+ OSC is designed to work well with patching environments such as Max/MSP and Pd,
  because its message tree structures can be very easily separated using the 
 \family typewriter
 [route]
@@ -325,7 +325,7 @@ end{verbatim}
 
 The command above sends a message to the address 
 \family typewriter
-/controller/move
+/controller/move/
 \family default
  with three arguments:
  60,
@@ -343,7 +343,7 @@ legato
 status open
 
 \begin_layout Plain Layout
-It is something like sending parameters to a function:
+Conceptually this is something like sending parameters to a function:
  
 \family typewriter
 move(60,
@@ -395,7 +395,7 @@ end{verbatim}
 \end_layout
 
 \begin_layout Standard
-This positional tag stipulates that 
+This particular positional tag stipulates that 
 \begin_inset Quotes eld
 \end_inset
 
@@ -474,7 +474,7 @@ structural
 
 \end_inset
 
- To send the control message above,
+ To send the control message above through UDP,
  we must do the following:
 \end_layout
 
@@ -534,15 +534,7 @@ Floats are 32-bit IEEE 754 standard floating-point,
 \end_layout
 
 \begin_layout Enumerate
-Strings such as 
-\begin_inset Quotes eld
-\end_inset
-
-legato
-\begin_inset Quotes erd
-\end_inset
-
- are standard ASCII and must be null-terminated,
+Strings are standard ASCII and must be null-terminated,
  and padded to 4 bytes,
  so 
 \begin_inset Quotes eld
@@ -720,16 +712,22 @@ Materials
 \begin_layout Standard
 In this project I used four Raspberry Pi Pico W boards and standard,
  low-cost electronics components such as breadboards,
- jumper cables,
- buttons,
- potentiometers,
- and simple LEDs (for status indications).
- A separate WiFi router was necessary,
+ jumper cables (Dupont style),
+ 6x6mm buttons,
+ a 10k
+\begin_inset Formula $\varOmega$
+\end_inset
+
+ potentiometer,
+ and simple LEDs for status indications.
+ A dedicated WiFi router was necessary,
  since DuqNet does not allow ad-hoc UDP.
  I built two pairs of victim/attacker setups,
  to demonstrate unsecured and secured models.
- The code was written in Python.
- The systems are shown below:
+ The code was written in MicroPython,
+ a special lightweight version of Python that runs on embedded systems.
+ The OSC messages were received on a Mac M1 or M4 running Max 9.x.
+ The four builds are shown below:
 \end_layout
 
 \begin_layout Standard
@@ -780,7 +778,7 @@ Unsecured Raspberry Pi Pico W builds:
 \end_layout
 
 \begin_layout Standard
-\align center
+\align left
 \begin_inset Float figure
 placement document
 alignment document
@@ -806,19 +804,14 @@ status open
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-Secured system (left),
+Secured system (left,
  with white LED,
- potentiometer and two buttons) and attacker (right,
- with red LED and button)
+ potentiometer and two buttons,) and attacker (right,
+ with red LED and button).
 \end_layout
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Plain Layout
-\align center
 
 \end_layout
 
@@ -832,28 +825,19 @@ Methods
 \end_layout
 
 \begin_layout Subsubsection
-System Architecture
-\end_layout
-
-\begin_layout Standard
-The system included senders (Raspberry Pi Pico W microcontrollers);
- a low cost consumer-grade Netgear router,
- and a receiver (a Macintosh M1 or M4 running Python3 and Max/MSP 9.x).
-\end_layout
-
-\begin_layout Subsubsection
 Packet Structure
 \end_layout
 
 \begin_layout Standard
-The packet consisted of a header (12 bytes) which had a version number,
- device ID,
- sequence number and payload length.
- The header was structured in the following manner:
+The packet consisted of a header,
+ payload and HMAC-SHA256 tag.
+ Specifically,
+ packets were structured in the following manner:
 \end_layout
 
 \begin_layout Enumerate
 Header:
+ 12 bytes,
  
 \family typewriter
 >BBIIH
@@ -985,19 +969,30 @@ If I were to have a control string such as
 
 \end_deeper
 \begin_layout Enumerate
-Finally we have the HMAC-SHA256 tag.
- A full SHA-256 hash is 32 bytes,
+HMAC-SHA256 tag = 16 bytes
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+A full SHA-256 hash is 32 bytes,
  but I truncated it to 16 (which still gives 
 \begin_inset Formula $2^{128}$
 \end_inset
 
  possible tags,
- which is probably secure enough).
- I decided to truncate the hash to save some overhead and improve latency,
- which is important in this project.
- The keyed hash is computed over the header AND the payload.
+ which is probably secure enough);
 \end_layout
 
+\begin_layout Enumerate
+The hash was truncated to save overhead and improve latency,
+ which is important in this project;
+\end_layout
+
+\begin_layout Enumerate
+The keyed hash was computed over the header AND the payload.
+\end_layout
+
+\end_deeper
 \begin_layout Standard
 Since 12 + 28 + 16 = 56,
  the total size of each packet is always 56 bytes.
@@ -1011,8 +1006,16 @@ Authentication Mechanism
 As mentioned above,
  this is HMAC-SHA256 over the header and the OSC payload,
  truncated to 16 bytes.
- The key is NOT transmitted and is shared out of band.
- Sharing the key is therefore the responsibility of the people implementing the system.
+ The key is NOT transmitted and is shared 
+\begin_inset Quotes eld
+\end_inset
+
+out of band
+\begin_inset Quotes erd
+\end_inset
+
+.
+ Securely sharing the key is therefore the responsibility of the people implementing the system.
 \end_layout
 
 \begin_layout Subsubsection
@@ -1182,7 +1185,7 @@ The Picos send their packets to port 9000,
 gateway.py
 \family default
  listens for on the receiving end.
- After the packets are received from the socket and processed,
+ After the packets are received from the network socket and processed,
  the gateway sends diagnostic messages (logs) to stdio.
  It then forwards legitimate OSC to localhost on port 8000 for Max/MSP to listen to.
 \end_layout
@@ -1193,7 +1196,7 @@ Results
 
 \begin_layout Standard
 I made a video demonstrating the unsecured operation,
- as well as three attacks.
+ as well as three attacks on the secure system.
  It can be viewed on YouTube at 
 \begin_inset CommandInset href
 LatexCommand href
@@ -1212,12 +1215,14 @@ Basic Attack Demonstration
 
 \begin_layout Standard
 As proof-of-concept,
- I simulated a trivial attack using two Raspberry Pi Pico Ws without any security mechanism.
+ I simulated a trivial attack using two Raspberry Pi Pico Ws without any security mechanism whatsoever.
  The victim simply sent OSC messages containing MIDI notes that produced a three-octave C Major arpeggio on the receiving end through a simple Max/MSP patch.
  The attacker sent random MIDI values on the same port as the victim,
  dramatically disrupting the arpeggio.
  The MIDI notes were shown on a standard musical staff as they were received and processed.
- The following screenshot shows the results of the attack on the musical staff in Max/MSP:
+ The following screenshot shows the network setup on the router,
+ and the results of the attack right at the moment it begins,
+ on the musical staff in Max/MSP:
 \end_layout
 
 \begin_layout Standard
@@ -1303,12 +1308,10 @@ VerbatimInput{02-log-gateway.txt}
 \end_layout
 
 \begin_layout Standard
-Another script,
- 
+A diagnostic script 
 \family typewriter
 listen-udp.py
 \family default
-,
  prints the raw packets out to stdio:
 \end_layout
 
