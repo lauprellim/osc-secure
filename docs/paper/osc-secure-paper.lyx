@@ -136,7 +136,8 @@ OSC
 
 \begin_layout Standard
 OSC (Open Sound Control) is widely used in computer music and interactive systems for sending live performance data.
- Very frequently the data is some musical control information (such as frequency or amplitude) that is produced by a human interface.
+ In many cases,
+ this data consists of some musical control information (such as frequency or amplitude) that is produced by a human interface.
  Many OSC software controllers are available online such as TouchOSC or Protokol.
  Users can install these on a so-called 
 \begin_inset Quotes eld
@@ -198,7 +199,7 @@ It is also possible to build one's own physical controllers out of hardware comp
  potentiometers,
  or even more sophisticated sensors (e.g.
  LSM9DS1 or BNO055).
- A small inexpensive microcontroller such as a Raspberry Pi Pico W can then run code that formats the data into an OSC message and send it through a wired or wireless connection.
+ A small inexpensive microcontroller such as a Raspberry Pi Pico W can then run code that formats the data into an OSC message and transmit it over a network connection.
 \end_layout
 
 \begin_layout Subsection
@@ -364,7 +365,7 @@ legato
 \end_inset
 
  This is the format that most naive users see.
- But OSC messages must also also include a positional tag that stipulates the data types being used in the correct order.
+ But OSC messages must also include a type tag string that stipulates the data types being used in the correct order.
  For the message above,
  we need:
 \begin_inset ERT
@@ -395,7 +396,7 @@ end{verbatim}
 \end_layout
 
 \begin_layout Standard
-This particular positional tag stipulates that 
+This particular type tag string stipulates that 
 \begin_inset Quotes eld
 \end_inset
 
@@ -479,7 +480,7 @@ structural
 \end_layout
 
 \begin_layout Enumerate
-First encode the address string in hexadecimal 
+First encode the OSC address 
 \begin_inset Quotes eld
 \end_inset
 
@@ -491,7 +492,7 @@ First encode the address string in hexadecimal
 \begin_inset Quotes erd
 \end_inset
 
-,
+ as an ASCII byte string,
  which is null-terminated and padded to a multiple of 4 bytes (in this particular case we have 16 bytes for the string,
  plus 1 for the null termination and then 3 more for padding,
  resulting in a final payload of 20 bytes);
@@ -658,7 +659,7 @@ flooding
  is a second problem that frequently occurs even when legitimately sending OSC control codes.
  Too many messages arriving at the same time can overload the ability to process them all,
  causing sequencing and timing issues in audio applications.
- Message flooding could occur if an attacker captured encrypted OSC control codes and replayed them,
+ Message flooding could occur if an attacker captured OSC packets and replayed them,
  overwhelming the victim.
 \end_layout
 
@@ -867,7 +868,8 @@ B = 1 byte = flags;
 \end_layout
 
 \begin_layout Enumerate
-I = 4 bytes = device id;
+I = 4 bytes = device id (to allow for many devices,
+ possible future expansion and alignment simplicity);
 \end_layout
 
 \begin_layout Enumerate
@@ -980,7 +982,7 @@ A full SHA-256 hash is 32 bytes,
 \end_inset
 
  possible tags,
- which is probably secure enough);
+ which provides a good security guarantee under the threat model outlined earlier);
 \end_layout
 
 \begin_layout Enumerate
@@ -995,7 +997,7 @@ The keyed hash was computed over the header AND the payload.
 \end_deeper
 \begin_layout Standard
 Since 12 + 28 + 16 = 56,
- the total size of each packet is always 56 bytes.
+ the total size of each packet in this particular implementation is always 56 bytes.
 \end_layout
 
 \begin_layout Subsubsection
@@ -1024,7 +1026,7 @@ Replay Protection
 
 \begin_layout Standard
 This was implemented with monotonically increasing sequence numbers.
- The receiver gateway rejects duplicates or out-of-order packets (depending on policy).
+ The receiver gateway rejects any duplicates or out-of-order packets/
 \end_layout
 
 \begin_layout Subsubsection
@@ -1491,7 +1493,7 @@ listen_udp.py
 \family default
  diagnostic script,
  and inserted one into the attacker's Python code.
- A more clever hacker who positioned themselves on the network and ran some capture software such as WireShark might be able to intercept packets.
+ A more clever hacker who positioned themselves on the network and ran some packet capture software such as Wireshark might be able to intercept packets.
 \end_layout
 
 \begin_layout Standard
@@ -1550,7 +1552,10 @@ The results of analyzing 30 packets reveal much interesting information.
  Secure RTT also averaged 211.2 - 212.2ms for most samples,
  with one larger outlier at 512.8ms.
  This data allows me to conclude that the practical end-to-end RTT in the project is dominated by something other than HMAC verification – most likely,
- the latency in WiFi variability.
+ the latency in WiFi variability,
+ network jitter,
+ OS scheduling,
+ or perhaps buffering delays.
 \end_layout
 
 \begin_layout Standard
@@ -1662,7 +1667,7 @@ In the plain gateway-side timing,
 \begin_inset Formula $\mu s$
 \end_inset
 
- with a rage of 146.9 – 366.5
+ with a range of 146.9 – 366.5
 \begin_inset Formula $\mu s$
 \end_inset
 
@@ -1949,7 +1954,8 @@ This lightweight system for authenticating OSC over UDP worked well,
  added an insignificant amount of latency,
  and survived three simulated attacks.
  When a user installs the Python code on the transmitting and receiving ends,
- the system's security increases dramatically.
+ the system significantly improved resistance to spoofing,
+ injection and replay attacks.
 \end_layout
 
 \begin_layout Standard
@@ -1963,6 +1969,18 @@ The most significant weakness in the current system is that a longer OSC payload
  Because the processing time of each packet is essentially insignificant,
  there is considerable headroom remaining,
  which could accommodate longer strings.
+\end_layout
+
+\begin_layout Standard
+A second area in which the current system could be improved is in the replay protection function.
+ The current implementation enforces strictly monotonic sequence numbers,
+ rejecting any out-of-order packets.
+ While this provides replay protection,
+ it also means that any packet received out-of-order will automatically be discarded.
+ While there is a potential musical argument for discarding any older control states,
+ it might be best to let the user decide the degree to which strict monotonic time should be enforced.
+ A future design could employ a user-defined sliding acceptance window to tolerate slight disorder,
+ while still preventing replay attacks.
 \end_layout
 
 \begin_layout Section
@@ -1992,7 +2010,7 @@ authenticity
 Although an attack on transmitting OSC information over UDP is unlikely,
  it is potentially catastophic in a sensitive performance environment.
  My system provides an added layer of security to defend against three possible attack vectors,
- dramatically increasing the overall system resilience.
+ significantly increasing the overall system resilience.
 \end_layout
 
 \begin_layout Standard
