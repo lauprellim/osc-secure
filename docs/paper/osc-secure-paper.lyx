@@ -139,15 +139,7 @@ OSC (Open Sound Control) is widely used in computer music and interactive system
  In many cases,
  this data consists of some musical control information (such as frequency or amplitude) that is produced by a human interface.
  Many OSC software controllers are available online such as TouchOSC or Protokol.
- Users can install these on a so-called 
-\begin_inset Quotes eld
-\end_inset
-
-smart
-\begin_inset Quotes erd
-\end_inset
-
--phone or tablet.
+ Users can install these on a so-called smartphone or tablet.
  These applications frequently allow the user to design a custom interface that can include virtual buttons,
  sliders,
  knobs,
@@ -208,7 +200,7 @@ OSC Encoding:
 \end_layout
 
 \begin_layout Standard
-The OSC protocol uses a hierarchical address space in which each message includes an address pattern that identifies its destination on the receiving end,
+The OSC protocol uses a hierarchical address in which each message includes an address pattern that identifies its destination on the receiving end,
  within a tree-like namespace (somewhat like a hierarchical filesystem structure).
 \begin_inset Foot
 status open
@@ -221,7 +213,7 @@ literal "false"
 
 \end_inset
 
-
+.
 \end_layout
 
 \end_inset
@@ -251,7 +243,7 @@ this byte is a continuation of the current message
 \end_inset
 
  (data).
- The designers of MIDI understood that there would probably only be 127 discrete values for pitch and volume,
+ The designers of MIDI understood that there would probably only be 128 discrete values for pitch and volume,
  so they left it at that.
  This corresponds (very) roughly to the number of keys on the modern Steinway piano (88).
  The MIDI standard cannot natively send other kinds of performance data such as floating-point numbers or strings.
@@ -279,7 +271,7 @@ literal "false"
 
 \end_inset
 
-
+.
 \end_layout
 
 \end_inset
@@ -304,7 +296,7 @@ begin{verbatim}
 
 \begin_layout Plain Layout
 
-/controller/move/ 60 0.75 
+/controller/move 60 0.75 
 \begin_inset Quotes eld
 \end_inset
 
@@ -326,7 +318,7 @@ end{verbatim}
 
 The command above sends a message to the address 
 \family typewriter
-/controller/move/
+/controller/move
 \family default
  with three arguments:
  60,
@@ -364,7 +356,7 @@ legato
 
 \end_inset
 
- This is the format that most naive users see.
+ This is the format that most users see.
  But OSC messages must also include a type tag string that stipulates the data types being used in the correct order.
  For the message above,
  we need:
@@ -424,7 +416,8 @@ numeric
  i,
  f,
  h,
- d (integer,
+ d:
+ integer,
  float,
  8-byte int,
  8-byte float
@@ -468,9 +461,10 @@ structural
 :
  t,
  m,
- r (timetag,
+ r:
+ timetag,
  MIDI,
- color in a 4-byte RGBA format!)
+ color in a 4-byte RGBA format
 \end_layout
 
 \end_inset
@@ -570,15 +564,14 @@ three way handshake
 \end_inset
 
  (SYN – SYN-ACK – ACK) nor is there a sequence number involved,
- nor does it retransmit lost packets.
- The logic behind using UDP is that in live performance,
- it is usually better just to drop a lost packet than to wait for it.
+ nor does UDP retransmit lost packets.
+ The logic for using the UDP protocol is that in live performance,
+ we need information quickly,
+ and it is usually better just to drop a lost packet than to wait for it.
 \end_layout
 
 \begin_layout Standard
-However,
- because UDP removes several mechanisms for authentication and state,
- it makes some attacks much easier.
+UDP removes several mechanisms for authentication and state.
  While it is possible to 
 \begin_inset Quotes eld
 \end_inset
@@ -587,7 +580,7 @@ spoof
 \begin_inset Quotes erd
 \end_inset
 
- TCP packets and even to inject data under some circumstances,
+ TCP packets and even inject data under some circumstances,
  UDP doesn't have any connection state,
  sequence tracking or verification.
  So the receiver doesn't really know where a packet came from.
@@ -715,18 +708,15 @@ In this project I used four Raspberry Pi Pico W boards and standard,
  low-cost electronics components such as breadboards,
  jumper cables (Dupont style),
  6x6mm buttons,
- a 10k
-\begin_inset Formula $\varOmega$
-\end_inset
-
- potentiometer,
+ a 10kΩ potentiometer,
  and simple LEDs for status indications.
  A dedicated WiFi router was necessary,
  since DuqNet does not allow ad-hoc UDP.
  I built two pairs of victim/attacker setups,
  to demonstrate unsecured and secured models.
- The code was written in MicroPython,
+ The code on the Pico boards is in MicroPython,
  a special lightweight version of Python that runs on embedded systems.
+ On the Mac we simply run Python 3.
  The OSC messages were received on a Mac M1 or M4 running Max 9.x.
  The four builds are shown below:
 \end_layout
@@ -864,7 +854,16 @@ B = 1 byte = version number;
 \end_layout
 
 \begin_layout Enumerate
-B = 1 byte = flags;
+B = 1 byte = flags (unused for now,
+ but available for some future purpose – 
+\begin_inset Quotes eld
+\end_inset
+
+forward compatibility
+\begin_inset Quotes erd
+\end_inset
+
+);
 \end_layout
 
 \begin_layout Enumerate
@@ -887,7 +886,7 @@ OSC Payload = 28 bytes
 
 \begin_deeper
 \begin_layout Enumerate
-The shortest control string I was transmitting is
+The shortest control string I am transmitting is
 \family typewriter
  /controller/pot1
 \family default
@@ -1026,7 +1025,7 @@ Replay Protection
 
 \begin_layout Standard
 This was implemented with monotonically increasing sequence numbers.
- The receiver gateway rejects any duplicates or out-of-order packets/
+ The receiver gateway rejects any duplicates or out-of-order packets.
 \end_layout
 
 \begin_layout Subsubsection
@@ -1056,14 +1055,26 @@ This discrepancy is due to the fact that MicroPython will automatically execute 
 \begin_inset Quotes eld
 \end_inset
 
+
+\family typewriter
 main.py
+\family default
+
 \begin_inset Quotes erd
 \end_inset
 
  when the Pico powers up.
- It is therefore quite advantageous to develop and test main.py using some alternative filename to prevent the system from accidentally executing it on powerup.
+ It is therefore quite advantageous to develop and test 
+\family typewriter
+main.py
+\family default
+ using some alternative filename to prevent the system from accidentally executing it on powerup.
  When deployed,
- the file is copied to main.py.
+ the file is copied to 
+\family typewriter
+main.py
+\family default
+.
 \end_layout
 
 \end_inset
@@ -1221,10 +1232,19 @@ As proof-of-concept,
  The victim simply sent OSC messages containing MIDI notes that produced a three-octave C Major arpeggio on the receiving end through a simple Max/MSP patch.
  The attacker sent random MIDI values on the same port as the victim,
  dramatically disrupting the arpeggio.
- The MIDI notes were shown on a standard musical staff as they were received and processed.
+ The MIDI notes were shown on a standard musical staff as they were received and processed thanks to the Bach/Cage library for Max/MSP (
+\begin_inset CommandInset href
+LatexCommand href
+name "https://www.bachproject.net/"
+target "https://www.bachproject.net/"
+literal "false"
+
+\end_inset
+
+).
  The following screenshot shows the network setup on the router,
  and the results of the attack right at the moment it begins,
- on the musical staff in Max/MSP:
+ on a standard musical staff in Max/MSP:
 \end_layout
 
 \begin_layout Standard
@@ -1492,7 +1512,7 @@ Here,
 listen_udp.py
 \family default
  diagnostic script,
- and inserted one into the attacker's Python code.
+ and simply pasted one into the attacker's Python code.
  A more clever hacker who positioned themselves on the network and ran some packet capture software such as Wireshark might be able to intercept packets.
 \end_layout
 
@@ -2008,7 +2028,7 @@ authenticity
 
 \begin_layout Standard
 Although an attack on transmitting OSC information over UDP is unlikely,
- it is potentially catastophic in a sensitive performance environment.
+ it is potentially catastrophic in a performance environment.
  My system provides an added layer of security to defend against three possible attack vectors,
  significantly increasing the overall system resilience.
 \end_layout
