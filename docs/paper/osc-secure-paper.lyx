@@ -707,7 +707,11 @@ Materials
 In this project I used four Raspberry Pi Pico W boards and standard,
  low-cost electronics components such as breadboards,
  jumper cables (Dupont style),
- 6x6mm buttons,
+ 6
+\begin_inset Formula $\times$
+\end_inset
+
+6mm buttons,
  a 10kΩ potentiometer,
  and simple LEDs for status indications.
  A dedicated WiFi router was necessary,
