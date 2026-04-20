@@ -872,7 +872,7 @@ forward compatibility
 
 \begin_layout Enumerate
 I = 4 bytes = device id (to allow for many devices,
- possible future expansion and alignment simplicity);
+ possible future expansion and for alignment simplicity);
 \end_layout
 
 \begin_layout Enumerate
@@ -1029,7 +1029,7 @@ status open
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-Secure Packet Design
+Secure Packet Design (need to add 1 byte of padding!)
 \end_layout
 
 \end_inset
@@ -1921,7 +1921,7 @@ Plain OSC:
 \begin_inset Text
 
 \begin_layout Plain Layout
-168.8 
+160.8 
 \begin_inset Formula $\mu s$
 \end_inset
 
