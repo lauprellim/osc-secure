@@ -122,7 +122,7 @@ Introduction
 
 \begin_layout Standard
 This project presents a lightweight authentication layer for transmitting OSC (Open Sound Control) packets over UDP,
- using HMAC and sequence-based replay protection.
+ using HMAC (Hash-Based Message Authentication Code) and sequence-based replay protection.
  The approach is designed for resource-constrained embedded controllers that operate in live performance or real-time musical applications.
 \end_layout
 
