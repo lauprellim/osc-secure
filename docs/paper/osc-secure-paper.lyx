@@ -131,13 +131,106 @@ Background
 \end_layout
 
 \begin_layout Subsection
+UDP
+\end_layout
+
+\begin_layout Standard
+UDP (User Datagram Protocol) is an important transport-layer protocol of the internet (TCP being the other).
+ Its standards are defined in RFC 768.
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+\begin_inset CommandInset citation
+LatexCommand citealt
+key "postel1980UDP"
+literal "false"
+
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+ It is designed 
+\begin_inset Quotes eld
+\end_inset
+
+with a minimum of protocol mechanism
+\begin_inset Quotes erd
+\end_inset
+
+,
+ and is 
+\begin_inset Quotes eld
+\end_inset
+
+transaction-oriented
+\begin_inset Quotes erd
+\end_inset
+
+,
+ meaning that it does not guarantee the 
+\begin_inset Quotes eld
+\end_inset
+
+ordered reliable delivery of streams of data
+\begin_inset Quotes erd
+\end_inset
+
+.
+ We can say that UDP is part of a broader set of standards that are layered in the following way:
+\end_layout
+
+\begin_layout Itemize
+Application layer (user facing) = a message of some sort
+\end_layout
+
+\begin_layout Itemize
+Transport layer (UDP) = datagram
+\end_layout
+
+\begin_layout Itemize
+Network layer (IP) = packet
+\end_layout
+
+\begin_layout Itemize
+Link layer (Ethernet or WiFi) = frame
+\end_layout
+
+\begin_layout Standard
+UDP will wrap a message in an 8 byte header which includes a source port,
+ destination port,
+ length and checksum.
+ This whole thing is called the 
+\begin_inset Quotes eld
+\end_inset
+
+UDP datagram
+\begin_inset Quotes erd
+\end_inset
+
+.
+ Then,
+ IP wraps this packet with another header (usually 20 bytes at minimum) that includes information relating to routing,
+ lifetime control,
+ fragmentation handling and demultiplexing.
+ Finally,
+ the link layer wraps everything yet again for Wifi/Ethernet transport.
+ So,
+ each message that the user sendsthrough the internet is further wrapped as it goes out over the internet.
+\end_layout
+
+\begin_layout Subsection
 OSC
 \end_layout
 
 \begin_layout Standard
-OSC (Open Sound Control) is widely used in computer music and interactive systems for sending live performance data.
+OSC (Open Sound Control) is a content protocol widely used in computer music and interactive systems for sending time-sensitivel control messages,
+ typically used in interactive and multimedia systems.
  In many cases,
- this data consists of some musical control information (such as frequency or amplitude) that is produced by a human interface.
+ the data OSC encodes consists of some musical control information (such as frequency or amplitude) that is produced by a human interface.
  Many OSC software controllers are available online such as TouchOSC or Protokol.
  Users can install these on a so-called smartphone or tablet.
  These applications frequently allow the user to design a custom interface that can include virtual buttons,
