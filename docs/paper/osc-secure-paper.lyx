@@ -809,6 +809,114 @@ less realistic threat
  then scans ports.
 \end_layout
 
+\begin_layout Subsection
+Previous Work in Securing OSC over UDP
+\end_layout
+
+\begin_layout Standard
+There is no built-in security model for OSC transmission:
+ no authentication,
+ no integrity protection,
+ and no encryption.
+ No widely adopted technologies are commonly used in practice.
+ That having been said,
+ there are some precedents for this project.
+ Notably,
+ they all sit above OSC itself,
+ focusing on securing the transport or network layers instead of the application layer.
+\end_layout
+
+\begin_layout Subsubsection
+WebSocket and TLS-based OSC Bridges
+\end_layout
+
+\begin_layout Standard
+The aforementioned TouchOSC application supports sending OSC over WebSockets (WSS),
+ which suggests that there is TLS encryption and integrity.
+ WSS encrypts all the data that's transmitted,
+ and maintains a single,
+ long-lived TCP connection thereby eliminating the need for repeated handshakes.
+ It operates on port 443,
+ and lies on the transport layer,
+ rather than within the OSC protocol itself.
+ Other applications that appear to use this approach include Slack and Discord.
+\end_layout
+
+\begin_layout Subsubsection
+liblio (OSC library) with TCP
+\end_layout
+
+\begin_layout Standard
+The 
+\family typewriter
+liblo
+\family default
+ library (
+\begin_inset CommandInset href
+LatexCommand href
+name "https://liblo.sourceforge.net"
+target "https://liblo.sourceforge.net"
+literal "false"
+
+\end_inset
+
+) supports OSC over UDP and TCP.
+ When combined with TLS for security,
+ this unfortunately departs from OSC's low-latency UDP implementation.
+\end_layout
+
+\begin_layout Subsubsection
+DTLS
+\end_layout
+
+\begin_layout Standard
+This standard – outlined in RFC 6347 – provides 
+\begin_inset Quotes eld
+\end_inset
+
+communications privacy for datagram protocols
+\begin_inset Quotes erd
+\end_inset
+
+.
+ It too is based on the TLS protocol,
+ however it is not typically used with OSC because it has handshake overhead,
+ and latency is not so good.
+ So it is not very useful for musical performance.
+\end_layout
+
+\begin_layout Subsubsection
+SRTP
+\end_layout
+
+\begin_layout Standard
+This standard is outlined in RFC 3711.
+ The 
+\begin_inset Quotes eld
+\end_inset
+
+Secure Real-Time Transport Protocol
+\begin_inset Quotes erd
+\end_inset
+
+ is quite close in spirit to my project in that it adds authentication via HMAC,
+ replay protection and optional encryption.
+ It specifies RTP (Real-Time Transport Protocol
+\begin_inset Quotes erd
+\end_inset
+
+ which sits over UDP and below the application logic.
+ While it doesn't guarantee packet delivery,
+ it does add some structures that would be useful for real-time media communication,
+ such as sequence numbers,
+ timestamps,
+ payload type tagging,
+ and sender identification.
+ However RTP by itself does not include authentication,
+ encryption or integrity protection.
+ SRTP – the secure varient of RTP – rectifies these deficiencies.
+\end_layout
+
 \begin_layout Section
 Materials and Methods
 \end_layout
