@@ -122,7 +122,7 @@ Introduction
 
 \begin_layout Standard
 This project presents a lightweight authentication layer for transmitting OSC (Open Sound Control) packets over UDP,
- using HMAC-SHA256 (Hash-Based Message Authentication Code + a cryptographic hash function) and sequence-based replay protection.
+ using HMAC+SHA256 (Hash-Based Message Authentication Code + a cryptographic hash function) and sequence-based replay protection.
  The approach is designed for resource-constrained embedded controllers that operate in live performance or real-time musical applications.
 \end_layout
 
@@ -269,6 +269,10 @@ TouchOSC with custom interface (image from TouchOSC's web site)
 
 \end_layout
 
+\begin_layout Plain Layout
+
+\end_layout
+
 \end_inset
 
 
@@ -280,7 +284,7 @@ It is also possible to build one's own physical controllers out of hardware comp
  potentiometers,
  or even more sophisticated sensors (e.g.
  LSM9DS1 or BNO055).
- A small inexpensive microcontroller such as a Raspberry Pi Pico W can then run code that formats the data into an OSC message and transmits it over a network connection.
+ A small inexpensive microcontroller such as a Raspberry Pi Pico W can then run code that formats the data into an OSC message and transmit it over a network connection.
 \end_layout
 
 \begin_layout Subsection
@@ -325,7 +329,16 @@ literal "false"
 \end_inset
 
 .
- The most significant bit in MIDI (the 8th bit) distinguishes status bytes from data bytes,
+\end_layout
+
+\end_inset
+
+
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+The most significant bit in MIDI (the 8th bit) distinguishes status bytes from data bytes,
  allowing the system to differentiate between 
 \begin_inset Quotes eld
 \end_inset
@@ -576,17 +589,17 @@ structural
 
 \begin_layout Enumerate
 First encode the OSC address 
+\begin_inset Quotes eld
+\end_inset
+
+
 \family typewriter
-
-\begin_inset Quotes erd
-\end_inset
-
 /controller/move
+\family default
+
 \begin_inset Quotes erd
 \end_inset
 
-
-\family default
  as an ASCII byte string,
  which is null-terminated and padded to a multiple of 4 bytes (in this particular case we have 16 bytes for the string,
  plus 1 for the null termination and then 3 more for padding,
@@ -672,7 +685,7 @@ three way handshake
 \end_layout
 
 \begin_layout Standard
-UDP lacks mechanisms for authentication and state.
+UDP removes several mechanisms for authentication and state.
  While it is possible to 
 \begin_inset Quotes eld
 \end_inset
@@ -685,8 +698,7 @@ spoof
  UDP doesn't have any connection state,
  sequence tracking or verification.
  So the receiver doesn't really know where a packet came from.
- This makes many types of attacks easier to perpetrate on UDP,
- than on TCP.
+ This makes spoofing and injection attacks much easier to perpetrate.
 \end_layout
 
 \begin_layout Subsection
@@ -820,9 +832,9 @@ WebSocket and TLS-based OSC Bridges
 
 \begin_layout Standard
 The aforementioned TouchOSC application supports sending OSC over WebSockets (WSS),
- which uses TLS/SSL encryption and integrity.
+ which suggests that there is TLS encryption and integrity.
  WSS encrypts all the data that's transmitted,
- and maintains a single open,
+ and maintains a single,
  long-lived TCP connection thereby eliminating the need for repeated handshakes.
  It operates on port 443,
  and lies on the transport layer,
@@ -858,24 +870,7 @@ DTLS
 \end_layout
 
 \begin_layout Standard
-This standard – outlined in RFC 6347
-\begin_inset Foot
-status open
-
-\begin_layout Plain Layout
-\begin_inset CommandInset citation
-LatexCommand citealt
-key "rfc6347"
-literal "false"
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
- – provides 
+This standard – outlined in RFC 6347 – provides 
 \begin_inset Quotes eld
 \end_inset
 
@@ -896,22 +891,6 @@ SRTP
 
 \begin_layout Standard
 This standard is outlined in RFC 3711.
-\begin_inset Foot
-status open
-
-\begin_layout Plain Layout
-\begin_inset CommandInset citation
-LatexCommand citealt
-key "rfc3711"
-literal "false"
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
  The 
 \begin_inset Quotes eld
 \end_inset
@@ -922,15 +901,11 @@ Secure Real-Time Transport Protocol
 
  is quite close in spirit to my project in that it adds authentication via HMAC,
  replay protection and optional encryption.
- It specifies RTP (
-\begin_inset Quotes eld
-\end_inset
-
-Real-Time Transport Protocol
+ It specifies RTP (Real-Time Transport Protocol
 \begin_inset Quotes erd
 \end_inset
 
-) which apparently sits over UDP and below the application logic.
+ which sits over UDP and below the application logic.
  While it doesn't guarantee packet delivery,
  it does add some structures that would be useful for real-time media communication,
  such as sequence numbers,
@@ -940,16 +915,6 @@ Real-Time Transport Protocol
  However RTP by itself does not include authentication,
  encryption or integrity protection.
  SRTP – the secure varient of RTP – rectifies these deficiencies.
-\end_layout
-
-\begin_layout Subsubsection
-Assessment
-\end_layout
-
-\begin_layout Standard
-As far as I understand it,
- no existing technique for sending OSC over networks operates on the application layer.
- Consequently the approach outlined in this paper is a promising foray into a field that still seems somewhat open to experimentation and development.
 \end_layout
 
 \begin_layout Section
@@ -962,7 +927,7 @@ Materials
 
 \begin_layout Standard
 In this project I used four Raspberry Pi Pico W boards and standard,
- low-cost electronics components including half- and full-sized breadboards,
+ low-cost electronics components such as breadboards,
  jumper cables (Dupont style),
  6
 \begin_inset Formula $\times$
@@ -976,7 +941,7 @@ In this project I used four Raspberry Pi Pico W boards and standard,
  I built two pairs of victim/attacker setups,
  to demonstrate unsecured and secured models.
  The code on the Pico boards is in MicroPython,
- a lightweight version of Python that runs on embedded systems.
+ a special lightweight version of Python that runs on embedded systems.
  On the Mac we simply run Python 3.
  The OSC messages were received on a Mac M1 or M4 running Max 9.x.
  The four builds are shown below:
@@ -1133,7 +1098,7 @@ I = 4 bytes = device id (to allow for many devices,
 \end_layout
 
 \begin_layout Enumerate
-I = 4 bytes = monotonic sequence number;
+I = 4 bytes = sequence number;
 \end_layout
 
 \begin_layout Enumerate
@@ -1147,7 +1112,7 @@ OSC Payload = 28 bytes
 
 \begin_deeper
 \begin_layout Enumerate
-The shortest control string I transmitted was
+The shortest control string I am transmitting is
 \family typewriter
  /controller/pot1
 \family default
@@ -1172,8 +1137,7 @@ OSC's type tag string,
 .
  This is 2 characters plus a null terminator,
  so 3 bytes.
- As per OSC specs,
- padded to 4 bytes.
+ Padded to 4 bytes.
 \end_layout
 
 \begin_layout Enumerate
@@ -1243,11 +1207,11 @@ A full SHA-256 hash is 32 bytes,
 \end_inset
 
  possible tags,
- providing a good security guarantee under the threat model outlined earlier);
+ which provides a good security guarantee under the threat model outlined earlier);
 \end_layout
 
 \begin_layout Enumerate
-The hash was truncated to 16 bytes to save overhead and improve latency,
+The hash was truncated to save overhead and improve latency,
  which is important in this project;
 \end_layout
 
@@ -1259,7 +1223,7 @@ The keyed hash was computed over the header AND the payload.
 \begin_layout Standard
 Since 12 + 28 + 16 = 56,
  the total size of each packet in this particular implementation is always 56 bytes.
- The packet design is illustrated below:
+ The packet design is illustrated below.
 \end_layout
 
 \begin_layout Standard
@@ -1269,6 +1233,10 @@ alignment document
 wide false
 sideways false
 status open
+
+\begin_layout Plain Layout
+
+\end_layout
 
 \begin_layout Plain Layout
 \align center
@@ -1289,6 +1257,10 @@ Secure Packet Design:
 
 \end_inset
 
+
+\end_layout
+
+\begin_layout Plain Layout
 
 \end_layout
 
@@ -1349,7 +1321,7 @@ main.py
 status open
 
 \begin_layout Plain Layout
-This is due to the fact that MicroPython will automatically execute any file named 
+This discrepancy is due to the fact that MicroPython will automatically execute any file named 
 \begin_inset Quotes eld
 \end_inset
 
@@ -1362,14 +1334,13 @@ main.py
 \end_inset
 
  when the Pico powers up.
- It is therefore quite advantageous in general,
- to develop and test 
+ It is therefore quite advantageous to develop and test 
 \family typewriter
 main.py
 \family default
  using some alternative filename to prevent the system from accidentally executing it on powerup.
  When deployed,
- the file is simply copied or moved to 
+ the file is copied to 
 \family typewriter
 main.py
 \family default
@@ -1426,7 +1397,7 @@ credentials.py
 osc_min.py
 \family default
 :
- this script helps to build the secure OSC packet;
+ this script builds the secure OSC packet;
 \end_layout
 
 \begin_layout Itemize
@@ -1522,13 +1493,13 @@ literal "false"
 \end_layout
 
 \begin_layout Subsection
-Basic Attack on Unsecured Systems
+Basic Attack Demonstration
 \end_layout
 
 \begin_layout Standard
 As proof-of-concept,
- I simulated a basic attack using two Raspberry Pi Pico Ws without any security mechanism whatsoever.
- The victim simply sent OSC messages containing MIDI notes every 100ms that a Max/MSP patch on the receiving end interpreted as a three-octave ascending and descending C Major arpeggio.
+ I simulated a trivial attack using two Raspberry Pi Pico Ws without any security mechanism whatsoever.
+ The victim simply sent OSC messages containing MIDI notes that produced a three-octave C Major arpeggio on the receiving end through a simple Max/MSP patch.
  The attacker sent random MIDI values on the same port as the victim,
  dramatically disrupting the arpeggio.
  The MIDI notes were shown on a standard musical staff as they were received and processed thanks to the Bach/Cage library for Max/MSP (
@@ -1541,7 +1512,8 @@ literal "false"
 \end_inset
 
 ).
- The following screenshot shows the network setup on the router and the results of the attack right at the moment after it begins,
+ The following screenshot shows the network setup on the router,
+ and the results of the attack right at the moment it begins,
  on a standard musical staff in Max/MSP:
 \end_layout
 
@@ -1594,11 +1566,8 @@ The receiver-side
 \family typewriter
 gateway.py
 \family default
- reports on its operation to stdio,
- whose output can obviously be redirected to a file.
- This log shows the normal secure operation of the system as it receives,
- decodes,
- validates and forwards secure OSC packets.
+ reports on its operation to stdio.
+ This log file shows the normal secure operation of the system.
  The size of each packet is correctly indicated as 56 bytes:
 \end_layout
 
@@ -1666,7 +1635,7 @@ To verify packets of potentiometer and button information were being correctly r
  I built a patch that mapped potentiometer value to frequency of a generic sawtooth oscillator,
  and each of the two buttons to a simple amplitude envelope of varying duration.
  The Max patch conveniently included a message that spawned a shell,
- executing a shell script that in turn started the 
+ executing a trivial shell script that in turn started the 
 \family typewriter
 gateway.py
 \family default
@@ -1676,8 +1645,7 @@ gateway.py
 gateway.py
 \family default
 .
- This mechanism allows the Max user to start and stop the secure system from within Max itself,
- so the user did not have to ever venture onto the command line themselves:
+ This mechanism allows the Max user to start and stop the secure system from within Max itself.
 \end_layout
 
 \begin_layout Standard
@@ -1764,11 +1732,11 @@ VerbatimInput{03-attack-1-plain-osc.txt}}
 \begin_layout Subsubsection
 Attack 2:
  Correct packet structure,
- wrong key
+ Wrong key
 \end_layout
 
 \begin_layout Standard
-Here,
+In this case,
  the attacker knows the packet design but has the incorrect shared HMAC key.
  The gateway responds with 
 \family typewriter
@@ -1814,7 +1782,7 @@ Here,
 listen_udp.py
 \family default
  diagnostic script,
- and simply pasted one into the attacker's Python code to be sent over UDP.
+ and simply pasted one into the attacker's Python code.
  A more clever hacker who positioned themselves on the network and ran some packet capture software such as Wireshark might be able to intercept packets.
 \end_layout
 
@@ -1826,7 +1794,7 @@ out of order
 \shape default
 .
  The packets are not encrypted,
- so this kind of attack is viable.
+ so this kind of attack is still possible.
  Nevertheless the gateway rejects the out-of-order packet,
  while allowing legitimate packets through.
 \end_layout
@@ -1863,7 +1831,7 @@ I did an analysis of latency by making a parallel branch of the code.
  Latency was measured in two ways:
  first as a round-trip timing (RTT),
  and second as gateway processing overhead on the Mac (receiving end).
- The RTT method was chosen because it is not possible to synchronize clocks on the Raspberry Pi Pico W and the Mac.
+ The round-trip method was chosen because it is not possible to synchronize clocks on the Raspberry Pi Pico W and the Mac.
 \end_layout
 
 \begin_layout Standard
@@ -2003,7 +1971,7 @@ the secure version adds about 58
  on average
 \series default
  to the gateway overhead compared to the plain OSC.
- This is negligible within the parameters of this project.
+ This is negligible in the parameters of this project.
  The results are summarized in the table below.
 \end_layout
 
@@ -2274,7 +2242,7 @@ Discussion
 \begin_layout Standard
 This lightweight system for authenticating OSC over UDP worked well,
  added an insignificant amount of latency,
- while surviving three simulated attacks.
+ and survived three simulated attacks.
  When a user installs the Python code on the transmitting and receiving ends,
  the system significantly improved resistance to spoofing,
  injection and replay attacks.
@@ -2283,14 +2251,14 @@ This lightweight system for authenticating OSC over UDP worked well,
 \begin_layout Standard
 The most significant weakness in the current system is that a longer OSC payload is not supported,
  because the OSC string is limited to 28 bytes.
- A design goal for a potential version 0.2 would be to allow for a variable-length OSC payload.
+ A design goal for a potential version 2.0 would be to allow for a variable-length OSC payload.
  Ultimately,
  the user should determine the length of the OSC command string,
  not the system.
- A future version would respond to whatever length OSC string the user sent into it,
- within reason.
+ A future version would respond to whatever length OSC string the user sent into it (within reason).
  Because the processing time of each packet is essentially insignificant,
- there is considerable headroom remaining which could accommodate longer strings.
+ there is considerable headroom remaining,
+ which could accommodate longer strings.
 \end_layout
 
 \begin_layout Standard
@@ -2299,7 +2267,7 @@ A second area in which the current system could be improved is in the replay pro
  rejecting any out-of-order packets.
  While this provides replay protection,
  it also means that any packet received out-of-order will automatically be discarded.
- While there is a good musical argument for simply discarding any older control states,
+ While there is a potential musical argument for discarding any older control states,
  it might be best to let the user decide the degree to which strict monotonic time should be enforced.
  A future design could employ a user-defined sliding acceptance window to tolerate slight disorder,
  while still preventing replay attacks.
@@ -2325,13 +2293,13 @@ authenticity
  as I did not want to increase latency by introducing an encryption/decrypion layer.
  However,
  noting that the cost of the current system is so low,
- encryption might be worth pursuing in the future.
+ adding encryption might be worth pursuing in the future.
 \end_layout
 
 \begin_layout Standard
 Although an attack on transmitting OSC information over UDP is unlikely,
  it is potentially catastrophic in a performance environment.
- My system provides a robust layer of security to defend against three possible attack vectors,
+ My system provides an added layer of security to defend against three possible attack vectors,
  significantly increasing the overall system resilience.
 \end_layout
 
