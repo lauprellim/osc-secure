@@ -8,8 +8,6 @@ Open Sound Control (OSC) is widely used in live electronic music, interactive ar
 
 This project demonstrates that vulnerability and implements a lightweight, application-layer security mechanism to mitigate it.
 
-⸻
-
 ## Project Goals
 
 The system adds a secure transport envelope around OSC messages that provides:
@@ -18,8 +16,6 @@ The system adds a secure transport envelope around OSC messages that provides:
 	•	Basic rate limiting and validation on the receiving host
 
 The goal is to preserve low latency while significantly improving resilience against injection and replay attacks.
-
-⸻
 
 ## System Architecture
 
@@ -34,8 +30,6 @@ Secure system:
 
 Max/MSP or Pd receives only verified messages.
 
-⸻
-
 ## Secure Packet Format
 
 Each UDP datagram contains:
@@ -49,8 +43,6 @@ Each UDP datagram contains:
 	8.	A 16-byte truncated HMAC-SHA256 authentication tag
 
 The HMAC is computed over the header and payload using a pre-shared symmetric key provisioned out-of-band.
-
----
 
 ## Weaknesses and future development
 
