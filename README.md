@@ -1,8 +1,8 @@
-**Secure OSC over UDP**
+# **Secure OSC over UDP**
 
 A lightweight application-layer security envelope for transmitting Open Sound Control (OSC) performance data over UDP.
 
-Overview
+## Overview
 
 Open Sound Control (OSC) is widely used in live electronic music, interactive art, and networked performance systems. OSC messages are typically transmitted over UDP to maintain low latency. However, UDP does not provide authentication, integrity protection or replay protection. On shared WiFi networks, any device that knows (or discovers) the destination IP address and port can inject OSC messages, potentially disrupting a performance.
 
@@ -10,7 +10,7 @@ This project demonstrates that vulnerability and implements a lightweight, appli
 
 ⸻
 
-Project Goals
+## Project Goals
 
 The system adds a secure transport envelope around OSC messages that provides:
 	•	Message authenticity and integrity using HMAC-SHA256
@@ -21,7 +21,7 @@ The goal is to preserve low latency while significantly improving resilience aga
 
 ⸻
 
-System Architecture
+## System Architecture
 
 Baseline system:
 	•	Raspberry Pi Pico W (“victim”) sends OSC over UDP
@@ -36,7 +36,7 @@ Max/MSP or Pd receives only verified messages.
 
 ⸻
 
-Secure Packet Format
+## Secure Packet Format
 
 Each UDP datagram contains:
 	1.	A 12-byte header
@@ -49,3 +49,9 @@ Each UDP datagram contains:
 	8.	A 16-byte truncated HMAC-SHA256 authentication tag
 
 The HMAC is computed over the header and payload using a pre-shared symmetric key provisioned out-of-band.
+
+---
+
+## Weaknesses and future development
+
+For now, the OSC payload is a fixed size of 28 bytes. To make the system more flexible, the length of the OSC message must be adaptable to whatever size the user desires. This shouldn't be a big fix, but it will be necessary for anybody wishing to adapt this to their own needs.
